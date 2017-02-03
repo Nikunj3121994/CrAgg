@@ -1,4 +1,4 @@
-package com.decyg.CrAgg
+package main.java.com.github.decyg.CrAgg
 
 import com.decyg.CrAgg.CIFParser.CIFSingleton
 

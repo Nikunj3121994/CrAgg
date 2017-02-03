@@ -1,4 +1,4 @@
-package com.decyg.CrAgg.CIFParser
+package main.java.com.github.decyg.CrAgg.CIFParser
 
 /**
  * A singleton designed to centralise the parsing logic for CIF files into its' component data classes.
