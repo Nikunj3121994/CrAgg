@@ -1,5 +1,8 @@
 package main.java.com.github.decyg.CrAgg.CIFParser
 
+import com.github.decyg.CrAgg.CIFParser.CIFParseException
+import java.io.File
+
 /**
  * A singleton designed to centralise the parsing logic for CIF files into its' component data classes.
  *
@@ -33,9 +36,9 @@ object CIFSingleton {
     private val RX_DQ =     Regex("\"")                         // Double quote
 
     private val RX_OrdinaryChar =   Regex("[A-Za-z!%&()*+,\\-./0-9:<=>?@^`{|}~]")
-    private val RX_NonBlankChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|$|$RX_SQ|_|;|\\[|\\])")
-    private val RX_TextLeadChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|$|$RX_SQ|_|$RX_SP|$RX_HT|\\[|\\])")
-    private val RX_AnyPrintChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|$|$RX_SQ|_|$RX_SP|$RX_HT|;|\\[|\\])")
+    private val RX_NonBlankChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|\\$|$RX_SQ|_|;|\\[|\\])")
+    private val RX_TextLeadChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|\\$|$RX_SQ|_|$RX_SP|$RX_HT|\\[|\\])")
+    private val RX_AnyPrintChar =   Regex("(?:$RX_OrdinaryChar|$RX_DQ|#|\\$|$RX_SQ|_|$RX_SP|$RX_HT|;|\\[|\\])")
 
     private val RX_DATA_ =          Regex("(?:[dD][aA][tT][aA]_)")
     private val RX_LOOP_ =          Regex("(?:[lL][oO][oO][pP]_)")
@@ -45,7 +48,7 @@ object CIFSingleton {
 
     // Complex strings, text fields and numbers
 
-    open val RX_Comments =               Regex("(?:(?:#(?:$RX_AnyPrintChar)*$RX_EOL)+)")
+    open val RX_Comments =               Regex("(?:#($RX_AnyPrintChar*))")
     open val RX_TokenizedComments =      Regex("(?:(?:$RX_SP|$RX_HT)+$RX_Comments)")
     open val RX_WhiteSpace =             Regex("(?:(?:$RX_SP|$RX_HT|$RX_EOL|(?:$RX_TokenizedComments))+)")
 
@@ -87,7 +90,7 @@ object CIFSingleton {
     /**
      * Below are the data classes representing the hierarchical data structure of CIF objects
      */
-    data class CIF(val comments : String = "", var dataBlocks : List<DataBlock>)
+    data class CIF(var comments : String = "", var dataBlocks : List<DataBlock> = emptyList())
 
     data class DataBlock(val heading : String, var dataItems : List<DataItems>, var saveFrames : List<SaveFrame>)
 
@@ -99,23 +102,81 @@ object CIFSingleton {
      * The core parser function that takes in a String and parses it into the object representation that's operable.
      */
 
-    fun parse(inputStr : String){
+    /**
+     * parse delegates to the parseCIF sub function which starts the recursive
+     *
+     * in each parseXXX function it's a series of functions containing a consumeToken
+     * function, consumetoken will fail if the pattern it's trying to consume is not matched and it's marked
+     * as non optional. If consumetoken was successful it will return a typed result before recursively delegating
+     * and consuming to the next parseXXX function, for example
+     *
+     *
+     * parseCIF will consume comments optionally, then it'll look for and consume many datablocks
+     * if it finds a datablock worth consuming, it'll call the parseDataBlock function which then expects a datablock
+     * heading etc, parseDataBlock will return a DataBlock function which gets compiled into a list by the parseCIF
+     *
+     * This continues all the way down until it's fully populated
+     */
 
-        /**
-         * parse delegates to the parseCIF sub function which starts the recursive
-         *
-         * in each parseXXX function it's a series of functions containing a consumeToken
-         * function, consumetoken will fail if the pattern it's trying to consume is not matched and it's marked
-         * as non optional. If consumetoken was successful it will return a typed result before recursively delegating
-         * and consuming to the next parseXXX function, for example
-         *
-         *
-         * parseCIF will consume comments optionally, then it'll look for and consume many datablocks
-         * if it finds a datablock worth consuming, it'll call the parseDataBlock function which then expects a datablock
-         * heading etc, parseDataBlock will return a DataBlock function which gets compiled into a list by the parseCIF
-         *
-         * This continues all the way down until it's fully populated
-         */
+    // Utility and core functions
+
+
+    var fileLines = mutableListOf<String>()
+    var lastParsedResult = CIF()
+
+    fun parse(inputFile : File) : CIF{
+
+        fileLines = inputFile.readLines().toMutableList()
+
+        try {
+            parseCIF()
+        } catch (e : CIFParseException) {
+            println("Parsing failed due to error: ${e.message}")
+        }
+
+
+        return lastParsedResult
+
+    }
+
+    fun hasNextMatch(regex : Regex, optional : Boolean = false) : Boolean {
+        return if (fileLines.size > 0) {
+            fileLines.first().matches(regex)
+        } else {
+            if (optional) {
+                false
+            } else {
+                throw CIFParseException("Parsing error when trying to read rule")
+            }
+        }
+    }
+
+    fun extractMatch(regex : Regex) : String {
+
+        val result = regex.matchEntire(fileLines.removeAt(0))
+
+        return result?.groupValues?.get(1) ?: ""
+    }
+
+    // Top level parsing functions
+
+    fun parseCIF() {
+
+        println(RX_Comments)
+        parseComments()
+        parseWhiteSpace()
+
+    }
+
+    // Component parsing functions
+
+    fun parseComments(){
+        while (hasNextMatch(RX_Comments)) { lastParsedResult.comments += extractMatch(RX_Comments) + '\n' }
+    }
+
+    fun parseWhiteSpace(){
+        while (hasNextMatch(RX_WhiteSpace)) { extractMatch(RX_WhiteSpace) }
     }
 
 }
+
