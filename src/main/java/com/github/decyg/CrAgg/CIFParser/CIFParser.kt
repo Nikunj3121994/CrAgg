@@ -4,23 +4,20 @@ import org.parboiled.BaseParser
 import org.parboiled.Rule
 import org.parboiled.annotations.BuildParseTree
 import org.parboiled.annotations.SuppressNode
-import java.util.*
+import org.parboiled.annotations.SuppressSubnodes
 
 /**
- * This class represents a direct encoding of the formal grammar of CIF.
+ * This class represents an encoding of the formal grammar of CIF.
+ *
+ * Various liberties were taking during the development of this due to the inconsistencies found in the official
+ * grammar. Such inconsistencies include mismatches brackets, non specific handling of whitespaces and EOL's.
+ *
+ * The version below can successfully parse a variety of
  *
  * It's encoded using the Parboiled library.
  */
 @BuildParseTree
-open class CIFParser : BaseParser<Objects>() {
-
-    open fun TestFirstOf() : Rule {
-        return FirstOf(
-                        Sequence(Numeric(), ZeroOrMore(ANY), EOI),
-                        Sequence(OneOrMore(ANY), EOI)
-                )
-
-    }
+open class CIFParser : BaseParser<Any>() {
 
     // Top level CIF rules
 
@@ -83,19 +80,20 @@ open class CIFParser : BaseParser<Objects>() {
     open fun DataItems() : Rule {
         return FirstOf(
                 Sequence(
-                        Tag(),
-                        WhiteSpace(),
-                        Value()
-
-                ),
-                Sequence(
                         LoopHeader(),
                         WhiteSpace(),
                         LoopBody()
+                ),
+                Sequence(
+                        Tag(),
+                        WhiteSpace(),
+                        Value()
                 )
+
         )
     }
 
+    @SuppressSubnodes
     open fun LoopHeader() : Rule {
         return Sequence(
                 LOOP_(),
@@ -106,6 +104,7 @@ open class CIFParser : BaseParser<Objects>() {
         )
     }
 
+    @SuppressSubnodes
     open fun LoopBody() : Rule {
         return ZeroOrMore(
                 Value(),
@@ -115,60 +114,45 @@ open class CIFParser : BaseParser<Objects>() {
 
     // Reserved words
 
+    @SuppressNode
     open fun DATA_() : Rule {
-        return Sequence(
-                AnyOf("dD"),
-                AnyOf("aA"),
-                AnyOf("tT"),
-                AnyOf("aA"),
-                '_'
-        )
+        return Sequence(AnyOf("dD"), AnyOf("aA"), AnyOf("tT"), AnyOf("aA"), '_')
     }
 
+    @SuppressNode
     open fun LOOP_() : Rule {
-        return Sequence(
-                AnyOf("lL"),
-                AnyOf("oO"),
-                AnyOf("oO"),
-                AnyOf("pP"),
-                '_'
-        )
+        return Sequence(AnyOf("lL"), AnyOf("oO"), AnyOf("oO"), AnyOf("pP"), '_')
     }
 
+    @SuppressNode
     open fun GLOBAL_() : Rule {
-        return Sequence(
-                AnyOf("gG"),
-                AnyOf("lL"),
-                AnyOf("oO"),
-                AnyOf("bB"),
-                AnyOf("aA"),
-                AnyOf("lL"),
-                '_'
-        )
+        return Sequence(AnyOf("gG"), AnyOf("lL"), AnyOf("oO"), AnyOf("bB"), AnyOf("aA"), AnyOf("lL"), '_')
     }
 
+    @SuppressNode
     open fun SAVE_() : Rule {
-        return Sequence(
-                AnyOf("sS"),
-                AnyOf("aA"),
-                AnyOf("vV"),
-                AnyOf("eE"),
-                '_'
-        )
+        return Sequence(AnyOf("sS"), AnyOf("aA"), AnyOf("vV"), AnyOf("eE"), '_')
     }
 
+    @SuppressNode
     open fun STOP_() : Rule {
-        return Sequence(
-                AnyOf("sS"),
-                AnyOf("tT"),
-                AnyOf("oO"),
-                AnyOf("pP"),
-                '_'
+        return Sequence(AnyOf("sS"), AnyOf("tT"), AnyOf("oO"), AnyOf("pP"), '_')
+    }
+
+    @SuppressNode
+    open fun ReservedString() : Rule {
+        return FirstOf(
+                DATA_(),
+                LOOP_(),
+                GLOBAL_(),
+                SAVE_(),
+                STOP_()
         )
     }
 
     // Tags and values
 
+    @SuppressNode
     open fun Tag() : Rule {
         return Sequence(
                 '_',
@@ -176,13 +160,14 @@ open class CIFParser : BaseParser<Objects>() {
         )
     }
 
+    @SuppressNode
     open fun Value() : Rule {
         return FirstOf(
                 '.',
                 '?',
-                Numeric(),
+                Sequence(Numeric(), Test(WhiteSpace())),
                 Sequence(TextField(), Test(WhiteSpace())),
-                Sequence(CharString(), Test(WhiteSpace()))
+                Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
             )
 
     }
@@ -191,6 +176,7 @@ open class CIFParser : BaseParser<Objects>() {
 
     // Rewrite of original, should match
     // 11, 11.11, 11.11e11, 11., +11.11e+11()
+    @SuppressNode
     open fun Numeric() : Rule {
         return Sequence(
                 Optional(AnyOf("+-")),
@@ -228,6 +214,7 @@ open class CIFParser : BaseParser<Objects>() {
 
     // Character strings and text fields
 
+    @SuppressNode
     open fun CharString() : Rule {
         return FirstOf(
                 SingleQuotedString(),
@@ -236,6 +223,7 @@ open class CIFParser : BaseParser<Objects>() {
         )
     }
 
+    @SuppressNode
     open fun UnquotedString() : Rule {
         return FirstOf(
                 Sequence(
@@ -254,37 +242,26 @@ open class CIFParser : BaseParser<Objects>() {
         )
     }
 
+    @SuppressNode
     open fun SingleQuotedString() : Rule {
         return Sequence(
                 '\'',
                 ZeroOrMore(
-                    FirstOf(
-                            Sequence(
-                                    '\'',
-                                    NonBlankChar()
-                            ),
-                            NotAnSQuote(),
-                            WhiteSpace()
-                    )
+                        AnyPrintChar(),
+                        TestNot(EOL())
                 ),
                 '\''
-        )
-    }
-
-    @SuppressNode
-    open fun NotAnSQuote() : Rule {
-        return FirstOf(
-                CharRange('!', '&'),
-                CharRange('(', '~')
         )
     }
 
     open fun DoubleQuotedString() : Rule {
         return Sequence(
                 '\"',
-                ZeroOrMore(AnyPrintChar()),
-                '\"',
-                WhiteSpace()
+                ZeroOrMore(
+                        AnyPrintChar(),
+                        TestNot(EOL())
+                ),
+                '\"'
         )
     }
 
@@ -295,7 +272,9 @@ open class CIFParser : BaseParser<Objects>() {
     open fun SemiColonTextField() : Rule {
         return Sequence(
                 ';',
-                ZeroOrMore(AnyPrintChar()),
+                ZeroOrMore(
+                        AnyPrintChar()
+                ),
                 EOL(),
                 ZeroOrMore(
                         Optional(
@@ -322,6 +301,7 @@ open class CIFParser : BaseParser<Objects>() {
         )
     }
 
+    @SuppressNode
     open fun TokenizedComments() : Rule {
         return Sequence(
                 OneOrMore(
@@ -351,7 +331,7 @@ open class CIFParser : BaseParser<Objects>() {
     open fun AnyPrintChar() : Rule {
         return FirstOf(
                 OrdinaryChar(),
-                AnyOf("\"#$'_ \t[]")
+                AnyOf("\"#$'_ \t;[]")
         )
     }
 
@@ -367,7 +347,7 @@ open class CIFParser : BaseParser<Objects>() {
     open fun NonBlankChar() : Rule {
         return FirstOf(
                 OrdinaryChar(),
-                AnyOf("\"#$'_[]")
+                AnyOf("\"#$'_;[]")
         )
     }
 
