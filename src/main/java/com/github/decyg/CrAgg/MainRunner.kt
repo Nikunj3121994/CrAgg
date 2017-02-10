@@ -1,4 +1,4 @@
-package main.java.com.github.decyg.CrAgg
+package com.github.decyg.CrAgg
 
 import com.github.decyg.CrAgg.CIFParser.CIFParser
 import org.parboiled.Parboiled
@@ -18,7 +18,7 @@ fun main(args : Array<String>){
     val pParser = Parboiled.createParser(CIFParser::class.java)
 
 
-    val res : ParsingResult<Any> = ReportingParseRunner<Any>(pParser.CIF()).run(File("1000036.cif").readText())
+    val res : ParsingResult<CIFParser.CIFNode> = ReportingParseRunner<CIFParser.CIFNode>(pParser.CIF()).run(File("1517271.cif").readText())
 
     //val res : ParsingResult<Any> = ReportingParseRunner<Any>(pParser.TestFirstOf()).run(test)
 

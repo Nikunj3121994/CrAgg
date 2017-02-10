@@ -1,4 +1,4 @@
-package main.java.com.github.decyg.CrAgg.CIFParser
+package com.github.decyg.CrAgg.CIFParser
 
 /**
  * A singleton designed to centralise the parsing logic for CIF files into its' component data classes.
@@ -21,6 +21,8 @@ object CIFSingleton {
     /**
      * Below are the data classes representing the hierarchical data structure of CIF objects
      */
+
+
     data class CIF(var comments : String = "", var dataBlocks : List<DataBlock> = emptyList())
 
     data class DataBlock(val heading : String, var dataItems : List<DataItems> = emptyList(), var saveFrames : List<SaveFrame> = emptyList())

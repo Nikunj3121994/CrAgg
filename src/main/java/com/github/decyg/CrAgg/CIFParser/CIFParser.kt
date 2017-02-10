@@ -5,6 +5,7 @@ import org.parboiled.Rule
 import org.parboiled.annotations.BuildParseTree
 import org.parboiled.annotations.SuppressNode
 import org.parboiled.annotations.SuppressSubnodes
+import org.parboiled.trees.MutableTreeNodeImpl
 
 /**
  * This class represents an encoding of the formal grammar of CIF.
@@ -17,7 +18,23 @@ import org.parboiled.annotations.SuppressSubnodes
  * It's encoded using the Parboiled library.
  */
 @BuildParseTree
-open class CIFParser : BaseParser<Any>() {
+open class CIFParser : BaseParser<CIFParser.CIFNode>() {
+
+    //data class test(val vol : String) : GraphNode<test>
+
+    class CIFNode(val value : String) : MutableTreeNodeImpl<CIFNode>() {
+
+        constructor(value : String, vararg children : CIFNode) : this(value) {
+            for ((i, v) in children.withIndex()){
+                super.addChild(i, v)
+            }
+        }
+
+        override fun toString(): String {
+            return value
+        }
+
+    }
 
     // Top level CIF rules
 
@@ -87,7 +104,8 @@ open class CIFParser : BaseParser<Any>() {
                 Sequence(
                         Tag(),
                         WhiteSpace(),
-                        Value()
+                        Value(),
+                        push(CIFNode("DataItem", pop(1), pop()))
                 )
 
         )
@@ -156,19 +174,23 @@ open class CIFParser : BaseParser<Any>() {
     open fun Tag() : Rule {
         return Sequence(
                 '_',
-                OneOrMore(NonBlankChar())
+                OneOrMore(NonBlankChar()),
+                push(CIFNode(match()))
         )
     }
 
     @SuppressNode
     open fun Value() : Rule {
-        return FirstOf(
-                '.',
-                '?',
-                Sequence(Numeric(), Test(WhiteSpace())),
-                Sequence(TextField(), Test(WhiteSpace())),
-                Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
-            )
+        return Sequence(
+                FirstOf(
+                        '.',
+                        '?',
+                        Sequence(Numeric(), Test(WhiteSpace())),
+                        Sequence(TextField(), Test(WhiteSpace())),
+                        Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
+                ),
+                push(CIFNode(match()))
+        )
 
     }
 
@@ -321,7 +343,8 @@ open class CIFParser : BaseParser<Any>() {
                     '#',
                     ZeroOrMore(AnyPrintChar()),
                     EOL()
-                )
+                ),
+                push(CIFNode(match()))
         )
     }
 
