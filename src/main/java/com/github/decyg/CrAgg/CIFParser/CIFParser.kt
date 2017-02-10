@@ -5,6 +5,7 @@ import org.parboiled.Rule
 import org.parboiled.annotations.BuildParseTree
 import org.parboiled.annotations.SuppressNode
 import org.parboiled.annotations.SuppressSubnodes
+import org.parboiled.support.Var
 import org.parboiled.trees.MutableTreeNodeImpl
 
 /**
@@ -30,6 +31,13 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
             }
         }
 
+        fun addChildBlind(child : CIFNode) : CIFNode {
+
+            super.addChild(super.getChildren().count(), child)
+
+            return this
+        }
+
         override fun toString(): String {
             return value
         }
@@ -39,22 +47,29 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     // Top level CIF rules
 
     open fun CIF() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("CIF"))
+
         return Sequence(
                 Optional(Comments()),
+                tempNode.set(tempNode.get().addChildBlind(pop())),
                 Optional(WhiteSpace()),
                 Optional(
                         DataBlock(),
+                        tempNode.set(tempNode.get().addChildBlind(pop())),
                         ZeroOrMore(
                                 WhiteSpace(),
-                                DataBlock()
+                                DataBlock(),
+                                tempNode.set(tempNode.get().addChildBlind(pop()))
                         ),
                         Optional(WhiteSpace())
                 ),
-                EOI
+                EOI,
+                push(tempNode.get())
         )
     }
 
     open fun DataBlock() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("DataBlock"))
         return Sequence(
                 DataBlockHeading(),
                 WhiteSpace(),
@@ -63,8 +78,10 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
                                 DataItems(),
                                 SaveFrame() // Doesn't usually fire
                         ),
+                        tempNode.set(tempNode.get().addChildBlind(pop())),
                         Optional(WhiteSpace())
-                )
+                ),
+                push(tempNode.get())
         )
     }
 
@@ -99,7 +116,8 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
                 Sequence(
                         LoopHeader(),
                         WhiteSpace(),
-                        LoopBody()
+                        LoopBody(),
+                        push(CIFNode("LoopedDataItem", pop(1), pop()))
                 ),
                 Sequence(
                         Tag(),
