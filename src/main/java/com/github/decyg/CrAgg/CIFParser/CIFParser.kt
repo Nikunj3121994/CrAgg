@@ -51,7 +51,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
         return Sequence(
                 Optional(Comments()),
-                tempNode.set(tempNode.get().addChildBlind(pop())),
+                //tempNode.set(tempNode.get().addChildBlind(pop())),
                 Optional(WhiteSpace()),
                 Optional(
                         DataBlock(),
@@ -70,8 +70,10 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
     open fun DataBlock() : Rule {
         var tempNode : Var<CIFNode> = Var(CIFNode("DataBlock"))
+
         return Sequence(
                 DataBlockHeading(),
+                tempNode.set(tempNode.get().addChildBlind(pop())),
                 WhiteSpace(),
                 ZeroOrMore(
                         FirstOf(
@@ -88,26 +90,33 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     open fun DataBlockHeading() : Rule {
         return Sequence(
                 DATA_(),
-                OneOrMore(NonBlankChar())
+                OneOrMore(NonBlankChar()),
+                push(CIFNode("DataBlockHeading", CIFNode(match())))
         )
     }
 
     open fun SaveFrame() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("SaveFrame"))
+
         return Sequence(
                 SaveFrameHeading(),
+                tempNode.set(tempNode.get().addChildBlind(pop())),
                 OneOrMore(
                         WhiteSpace(),
-                        DataItems()
+                        DataItems(),
+                        tempNode.set(tempNode.get().addChildBlind(pop()))
                 ),
                 WhiteSpace(),
-                SAVE_()
+                SAVE_(),
+                push(tempNode.get())
         )
     }
 
     open fun SaveFrameHeading() : Rule {
         return Sequence(
                 SAVE_(),
-                OneOrMore(NonBlankChar())
+                OneOrMore(NonBlankChar()),
+                push(CIFNode("SaveFrameHeading", CIFNode(match())))
         )
     }
 
@@ -131,20 +140,30 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
     @SuppressSubnodes
     open fun LoopHeader() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("LoopHeader"))
+
         return Sequence(
                 LOOP_(),
                 OneOrMore(
                         WhiteSpace(),
-                        Tag()
-                )
+                        Tag(),
+                        tempNode.set(tempNode.get().addChildBlind(pop()))
+                ),
+                push(tempNode.get())
         )
     }
 
     @SuppressSubnodes
     open fun LoopBody() : Rule {
-        return ZeroOrMore(
-                Value(),
-                WhiteSpace()
+        var tempNode : Var<CIFNode> = Var(CIFNode("LoopBody"))
+
+        return Sequence(
+                ZeroOrMore(
+                    Value(),
+                    tempNode.set(tempNode.get().addChildBlind(pop())),
+                    WhiteSpace()
+                ),
+                push(tempNode.get())
         )
     }
 
@@ -207,7 +226,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
                         Sequence(TextField(), Test(WhiteSpace())),
                         Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
                 ),
-                push(CIFNode(match()))
+                push(CIFNode(match())) // This is potentially going to need changing due to the fact that it pushed the delimiters for textfields
         )
 
     }
@@ -355,16 +374,32 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
         )
     }
 
+    // Decided not to match comments as a node as it's technically not relevant to the picked up data
+    // Also because WhiteSpace are also technically interchangable with Comments which is a bit of a headache
+    // A messy potential solution could be matching regularly here but just having a method up above called
+    // appendComment or something that adds it to a top level Comment node
     open fun Comments() : Rule {
         return OneOrMore(
-                Sequence(
-                    '#',
-                    ZeroOrMore(AnyPrintChar()),
-                    EOL()
-                ),
-                push(CIFNode(match()))
+                '#',
+                ZeroOrMore(AnyPrintChar()),
+                EOL()
         )
     }
+
+    /*open fun Comments() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("Comments"))
+
+        return Sequence(
+                OneOrMore(
+                    '#',
+                    ZeroOrMore(AnyPrintChar()),
+                    push(CIFNode(match())),
+                    tempNode.set(tempNode.get().addChildBlind(pop())),
+                    EOL()
+                ),
+                push(tempNode.get())
+        )
+    }*/
 
     // Character sets
 
