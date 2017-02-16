@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.CIFParser
+package com.github.decyg.CrAgg.cif
 
 import org.parboiled.BaseParser
 import org.parboiled.Rule
@@ -220,9 +220,9 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     open fun Value() : Rule {
         return Sequence(
                 FirstOf(
+                        Sequence(Numeric(), Test(WhiteSpace())),
                         '.',
                         '?',
-                        Sequence(Numeric(), Test(WhiteSpace())),
                         Sequence(TextField(), Test(WhiteSpace())),
                         Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
                 ),
