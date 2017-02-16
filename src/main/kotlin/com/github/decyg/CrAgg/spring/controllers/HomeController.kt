@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 class HomeController {
 
-    @RequestMapping("/results")
+    @RequestMapping("/")
     fun indexPage() : String {
         return "index"
     }
