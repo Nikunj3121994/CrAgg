@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping
  */
 
 @Controller
-class HomeController {
+open class HomeController {
 
     @RequestMapping("/")
-    fun indexPage() : String {
+    open fun indexPage() : String {
         return "index"
     }
 
