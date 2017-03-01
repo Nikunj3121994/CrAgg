@@ -7,7 +7,7 @@ import org.parboiled.support.ParsingResult
 import java.io.File
 
 /**
- * A singleton designed to centralise the parsing logic for CIF files into its' component data classes.
+ * A singleton designed to centralise the parsing logic for CIF_Node files into its' component data classes.
  *
  * Parser conforms to syntax outlined in http://www.iucr.org/resources/cif/spec/version1.1/cifsyntax
  *
@@ -20,7 +20,7 @@ object CIFSingleton {
     val pParser : CIFParser = Parboiled.createParser(CIFParser::class.java)
 
     fun parseCIF(cifFile : File) : CIFParser.CIFNode {
-        val parseRes : ParsingResult<CIFParser.CIFNode> = ReportingParseRunner<CIFParser.CIFNode>(pParser.CIF())
+        val parseRes : ParsingResult<CIFParser.CIFNode> = ReportingParseRunner<CIFParser.CIFNode>(pParser.CIF_Node())
                 .run(cifFile.readText())
 
         if (parseRes.parseErrors.isEmpty().not()){

@@ -9,7 +9,7 @@ import org.parboiled.support.Var
 import org.parboiled.trees.MutableTreeNodeImpl
 
 /**
- * This class represents an encoding of the formal grammar of CIF.
+ * This class represents an encoding of the formal grammar of CIF_Node.
  *
  * Various liberties were taking during the development of this due to the inconsistencies found in the official
  * grammar. Such inconsistencies include mismatches brackets, non specific handling of whitespaces and EOL's.
@@ -44,21 +44,21 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
     }
 
-    // Top level CIF rules
+    // Top level CIF_Node rules
 
-    open fun CIF() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("CIF"))
+    open fun CIF_Node() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("CIF_Node"))
 
         return Sequence(
                 Optional(Comments()),
                 //tempNode.set(tempNode.get().addChildBlind(pop())),
                 Optional(WhiteSpace()),
                 Optional(
-                        DataBlock(),
+                        DataBlock_Node(),
                         tempNode.set(tempNode.get().addChildBlind(pop())),
                         ZeroOrMore(
                                 WhiteSpace(),
-                                DataBlock(),
+                                DataBlock_Node(),
                                 tempNode.set(tempNode.get().addChildBlind(pop()))
                         ),
                         Optional(WhiteSpace())
@@ -68,8 +68,8 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
         )
     }
 
-    open fun DataBlock() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("DataBlock"))
+    open fun DataBlock_Node() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("DataBlock_Node"))
 
         return Sequence(
                 DataBlockHeading(),
@@ -77,8 +77,8 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
                 WhiteSpace(),
                 ZeroOrMore(
                         FirstOf(
-                                DataItems(),
-                                SaveFrame() // Doesn't usually fire
+                                DataItems_Node(),
+                                SaveFrame_Node() // Doesn't usually fire
                         ),
                         tempNode.set(tempNode.get().addChildBlind(pop())),
                         Optional(WhiteSpace())
@@ -95,15 +95,15 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
         )
     }
 
-    open fun SaveFrame() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("SaveFrame"))
+    open fun SaveFrame_Node() : Rule {
+        var tempNode : Var<CIFNode> = Var(CIFNode("SaveFrame_Node"))
 
         return Sequence(
                 SaveFrameHeading(),
                 tempNode.set(tempNode.get().addChildBlind(pop())),
                 OneOrMore(
                         WhiteSpace(),
-                        DataItems(),
+                        DataItems_Node(),
                         tempNode.set(tempNode.get().addChildBlind(pop()))
                 ),
                 WhiteSpace(),
@@ -120,7 +120,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
         )
     }
 
-    open fun DataItems() : Rule {
+    open fun DataItems_Node() : Rule {
         return FirstOf(
                 Sequence(
                         LoopHeader(),

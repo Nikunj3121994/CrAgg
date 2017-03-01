@@ -3,7 +3,7 @@ package com.github.decyg.CrAgg.cif
 import com.github.decyg.CrAgg.database.DBSource
 
 /**
- * This class represents a more brief overview of a CIF result.
+ * This class represents a more brief overview of a CIF_Node result.
  *
  * The structure of the fields here are kindly lifted from how the CCDC displays their results as i'm
  * not too experienced with chemistry so i wouldn't know what's common

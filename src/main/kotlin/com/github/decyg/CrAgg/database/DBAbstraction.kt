@@ -20,7 +20,7 @@ interface DBAbstraction {
     fun queryDatabase(queries : List<QueryWrapper>) : List<CIFBriefResult>
 
     /**
-     * Takes in a single CIFBriefResult selected from the queryDatabase function above, then returns a parsed CIF file in
+     * Takes in a single CIFBriefResult selected from the queryDatabase function above, then returns a parsed CIF_Node file in
      * the format of a CIFNode tree
      */
     fun queryDatabaseSpecific(specificResult : CIFBriefResult) : CIFDetailedResult
