@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg
 
-import com.github.decyg.CrAgg.cif.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.File

@@ -1,5 +1,6 @@
-package com.github.decyg.CrAgg.cif
+package com.github.decyg.CrAgg.cif.results
 
+import com.github.decyg.CrAgg.cif.CIFSingleton
 import java.io.File
 
 /**
@@ -20,33 +21,6 @@ class CIFDetailedResult(input : File) {
 
     // Note that i'm using maps but also storing the key inside the stored value, this is potentially redundant
     // but i did it this way to be consistent across all wrapped objects and make accesses easy and straight forward
-
-    data class LoopedDataItem(
-            val tag : String,
-            val value : MutableList<String>
-    )
-
-    data class DataItem(
-            val tag : String,
-            val value : String
-    )
-
-    data class SaveFrame(
-            var saveFrameHeader : String,
-            var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
-            var loopedDataItems : MutableList<MutableMap<String, LoopedDataItem>>
-    )
-
-    data class DataBlock(
-            var dataBlockHeader : String, // consistency
-            var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
-            var loopedDataItems : MutableList<MutableMap<String, LoopedDataItem>>,
-            var saveFrames : MutableMap<String, SaveFrame>
-    )
-
-    data class CIF(
-            var dataBlocks : MutableMap<String, DataBlock>
-    )
 
     var cifResult : CIF = CIF(mutableMapOf())
 
@@ -123,6 +97,10 @@ class CIFDetailedResult(input : File) {
                         )
                     }
 
+                    "SaveFrame" -> {
+                        // ???
+                    }
+
                 }
 
             }
@@ -134,3 +112,34 @@ class CIFDetailedResult(input : File) {
     }
 
 }
+
+// Inner definitions down here for tidyness
+
+typealias LoopedDataItemGroup = MutableMap<String, LoopedDataItem>
+
+data class LoopedDataItem(
+        val tag : String,
+        val value : MutableList<String>
+)
+
+data class DataItem(
+        val tag : String,
+        val value : String
+)
+
+data class SaveFrame(
+        var saveFrameHeader : String,
+        var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
+        var loopedDataItems : MutableList<LoopedDataItemGroup>
+)
+
+data class DataBlock(
+        var dataBlockHeader : String, // consistency
+        var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
+        var loopedDataItems : MutableList<LoopedDataItemGroup>,
+        var saveFrames : MutableMap<String, SaveFrame>
+)
+
+data class CIF(
+        var dataBlocks : MutableMap<String, DataBlock>
+)
