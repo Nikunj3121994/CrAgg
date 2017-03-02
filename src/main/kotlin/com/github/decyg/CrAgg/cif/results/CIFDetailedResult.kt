@@ -113,7 +113,7 @@ class CIFDetailedResult(input : File) {
 
 }
 
-// Inner definitions down here for tidyness
+// Inner definitions for organisation
 
 typealias LoopedDataItemGroup = MutableMap<String, LoopedDataItem>
 

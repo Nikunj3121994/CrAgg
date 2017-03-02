@@ -10,6 +10,7 @@ enum class CommonQueryTerm(pName : String) {
     ID("Identifier"),
     SPACE_GROUP("Space Group"),
     AUTHOR("Author"),
+    FORMULA("Chemical Formula"),
     COMP_NAME("Compound Name");
 
 

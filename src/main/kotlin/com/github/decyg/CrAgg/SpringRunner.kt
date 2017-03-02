@@ -1,7 +1,9 @@
 package com.github.decyg.CrAgg
 
-import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
+import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
+import com.github.decyg.CrAgg.database.DBSingleton
+import com.github.decyg.CrAgg.database.implementation.COD
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.File
 
@@ -18,6 +20,8 @@ fun main(args: Array<String>) {
 
     var res = CIFDetailedResult(File("1517271.cif"))
     println("yo")
+
+    DBSingleton.getDBBySource(COD::javaClass).queryDatabase(emptyList())
     //SpringApplication.run(SpringRunner::class.java, *args)
 }
 

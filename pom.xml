@@ -55,6 +55,15 @@
             </snapshots>
         </repository>
 
+        <repository>
+            <id>jfrog</id>
+            <name>JFrog</name>
+            <url>https://dl.bintray.com/kotlin/exposed</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
@@ -81,12 +90,24 @@
 
     <dependencies>
 
-        <!-- Requery -->
+        <!-- Exposed & MySQL -->
 
         <dependency>
-            <groupId>io.requery</groupId>
-            <artifactId>requery</artifactId>
-            <version>1.2.0</version>
+            <groupId>org.jetbrains.exposed</groupId>
+            <artifactId>exposed</artifactId>
+            <version>0.7.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.andrewoma.kwery</groupId>
+            <artifactId>core</artifactId>
+            <version>0.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.5</version>
         </dependency>
 
         <!-- Parboiled -->
