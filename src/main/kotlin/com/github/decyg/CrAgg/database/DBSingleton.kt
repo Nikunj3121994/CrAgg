@@ -2,14 +2,14 @@ package com.github.decyg.CrAgg.database
 
 import com.github.decyg.CrAgg.database.implementation.COD
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
-import kotlin.reflect.KProperty1
+import kotlin.reflect.KClass
 
 /**
  * Central class to handle dispatching and managing of various implementations
  * Created by declan on 27/02/2017.
  */
 
-typealias DBSource = KProperty1<out DBAbstraction, Class<out DBAbstraction>>
+typealias DBSource = KClass<out DBAbstraction>
 
 object DBSingleton {
 
@@ -21,7 +21,7 @@ object DBSingleton {
      */
     val datasetMap = mapOf<DBSource, DBAbstraction>(
 
-            COD::javaClass to COD(mapOf(
+            COD::class to COD(mapOf(
                     CommonQueryTerm.ID to "file",
                     CommonQueryTerm.AUTHOR to "authors",
                     CommonQueryTerm.SPACE_GROUP to "sg",
