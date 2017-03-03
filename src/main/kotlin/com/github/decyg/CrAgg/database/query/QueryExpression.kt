@@ -20,5 +20,21 @@ package com.github.decyg.CrAgg.database.query
  *
  * Created by declan on 03/03/2017.
  */
-class QueryExpression {
+
+
+/**
+ * The top level Expression interface that defines the inheritance behaviour
+ */
+interface Expression
+
+data class QueryExpression(val expression : Expression){
+
+    class AND(vararg expressions : Expression) : Expression
+
+    class OR(vararg expressions : Expression) : Expression
+
+    class NOT(expression : Expression) : Expression
+
+    class TERM(key : CommonQueryTerm, quantifier : QueryQuantifier, term : String) : Expression
+
 }
