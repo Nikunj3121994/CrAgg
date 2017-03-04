@@ -19,15 +19,19 @@ object CIFSingleton {
 
     val pParser : CIFParser = Parboiled.createParser(CIFParser::class.java)
 
-    fun parseCIF(cifFile : File) : CIFParser.CIFNode {
+    fun parseCIF(cifText : String) : CIFParser.CIFNode {
         val parseRes : ParsingResult<CIFParser.CIFNode> = ReportingParseRunner<CIFParser.CIFNode>(pParser.CIF_Node())
-                .run(cifFile.readText())
+                .run(cifText)
 
         if (parseRes.parseErrors.isEmpty().not()){
             throw ParseException(ErrorUtils.printParseError(parseRes.parseErrors?.get(0)))
         }
 
         return parseRes.resultValue
+    }
+
+    fun parseCIF(cifFile : File) : CIFParser.CIFNode {
+        return parseCIF(cifFile.readText())
     }
 
 

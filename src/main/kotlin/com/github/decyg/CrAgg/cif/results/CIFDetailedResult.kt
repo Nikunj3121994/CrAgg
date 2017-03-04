@@ -1,5 +1,6 @@
 package com.github.decyg.CrAgg.cif.results
 
+import com.github.decyg.CrAgg.cif.CIFParser
 import com.github.decyg.CrAgg.cif.CIFSingleton
 import java.io.File
 
@@ -10,7 +11,7 @@ import java.io.File
  * Takes in a File, turns it into a CIFNode, traverses it and populates its' root CIF_Node value
  * Created by declan on 27/02/2017.
  */
-class CIFDetailedResult(input : File) {
+class CIFDetailedResult(cifNode : CIFParser.CIFNode) {
 
     // In the abstraction i want to seperate the level of a regular top level dataitem on a datablock
     // from a looped data item, this is because a looped data item is essentially a table and representing this
@@ -25,8 +26,6 @@ class CIFDetailedResult(input : File) {
     var cifResult : CIF = CIF(mutableMapOf())
 
     init {
-
-        val cifNode = CIFSingleton.parseCIF(input)
 
         // Note for the implementation below, it's not a recursive function as it doesn't need to be. It just needs
         // to break down the Node representation into the user readable format

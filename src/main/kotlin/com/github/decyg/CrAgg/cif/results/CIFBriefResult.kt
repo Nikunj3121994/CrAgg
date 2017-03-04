@@ -13,6 +13,7 @@ data class CIFBriefResult(
         val source : DBSource, // The type of the source, could do this through generics but it'd be messy
         val id : String, // The id of the entry found in the original database
         val spaceGroup : String, // The space group of a crystal
-        val unitCell : Map<String, Double>, // A Map describing the unit cell of something
-        val compoundName : String // The name of the compound
+      //  val unitCell : Map<String, Double>, // A Map describing the unit cell of something
+        val compoundName : String, // The name of the compound
+        val chemFormula : String // The formula of the compound
 )

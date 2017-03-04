@@ -1,7 +1,6 @@
 package com.github.decyg.CrAgg
 
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.database.implementation.COD
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
@@ -23,7 +22,7 @@ fun main(args: Array<String>) {
 
     val oNode = CIFSingleton.parseCIF(File("1517271.cif"))
 
-    var res = CIFDetailedResult(File("1517271.cif"))
+    //var res = CIFDetailedResult(File("1517271.cif"))
     println("yo")
 
     //SpringApplication.run(SpringRunner::class.java, *args)
@@ -35,6 +34,10 @@ fun main(args: Array<String>) {
     )
 
 
-    DBSingleton.getDBBySource(COD::class).queryDatabase(QE)
+    val dbRes = DBSingleton.getDBBySource(COD::class).queryDatabase(QE)
+
+    val dbResSpec = DBSingleton.getDBBySource(COD::class).queryDatabaseSpecific(dbRes[0])
+
+    println("all done")
 }
 
