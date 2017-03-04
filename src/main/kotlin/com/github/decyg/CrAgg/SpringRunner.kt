@@ -7,6 +7,7 @@ import com.github.decyg.CrAgg.database.implementation.COD
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.QueryQuantifier
+import com.github.decyg.CrAgg.database.query.TERM
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.File
 
@@ -25,16 +26,15 @@ fun main(args: Array<String>) {
     var res = CIFDetailedResult(File("1517271.cif"))
     println("yo")
 
-    DBSingleton.getDBBySource(COD::class).queryDatabase(emptyList())
     //SpringApplication.run(SpringRunner::class.java, *args)
 
-    QueryExpression(
-            QueryExpression.AND(
-                    QueryExpression.TERM(
-                            CommonQueryTerm.AUTHOR, QueryQuantifier.CONTAINS, "edmund"
-                    ),
-                    QueryExpression.TERM()
-            )
+    val QE = QueryExpression(
+            TERM(
+                        CommonQueryTerm.AUTHOR, QueryQuantifier.CONTAINS, textTerm = "thompson"
+                )
     )
+
+
+    DBSingleton.getDBBySource(COD::class).queryDatabase(QE)
 }
 

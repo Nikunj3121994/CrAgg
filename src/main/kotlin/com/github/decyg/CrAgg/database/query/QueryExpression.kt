@@ -27,14 +27,18 @@ package com.github.decyg.CrAgg.database.query
  */
 interface Expression
 
-data class QueryExpression(val expression : Expression){
+data class QueryExpression(val expression : Expression) : Expression
 
-    class AND(vararg expressions : Expression) : Expression
+data class AND(val leftExp : Expression, val rightExp : Expression) : Expression
 
-    class OR(vararg expressions : Expression) : Expression
+data class OR(val leftExp : Expression, val rightExp : Expression) : Expression
 
-    class NOT(expression : Expression) : Expression
+data class NOT(val expression : Expression) : Expression
 
-    class TERM(key : CommonQueryTerm, quantifier : QueryQuantifier, term : String) : Expression
-
-}
+class TERM(
+        val key : CommonQueryTerm,
+        val quantifier : QueryQuantifier,
+        val textTerm : String = "",
+        val numericalTerm : Double = 0.0,
+        val booleanTerm : Boolean = false
+) : Expression

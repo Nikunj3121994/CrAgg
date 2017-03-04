@@ -24,10 +24,27 @@ object DBSingleton {
             COD::class to COD(mapOf(
                     CommonQueryTerm.ID to "file",
                     CommonQueryTerm.AUTHOR to "authors",
-                    CommonQueryTerm.SPACE_GROUP to "sg",
-                    CommonQueryTerm.COMP_NAME to "chemname",
-                    CommonQueryTerm.FORMULA to "formula"
-            ))
+                    CommonQueryTerm.ARTICLE to "title",
+                    CommonQueryTerm.JOURNAL to "journal",
+                    CommonQueryTerm.JOURNAL_DOI to "doi",
+                    CommonQueryTerm.YEAR to "year",
+
+                    CommonQueryTerm.A_LENGTH to "a",
+                    CommonQueryTerm.B_LENGTH to "b",
+                    CommonQueryTerm.C_LENGTH to "c",
+                    CommonQueryTerm.ALPHA_LENGTH to "alpha",
+                    CommonQueryTerm.BETA_LENGTH to "beta",
+                    CommonQueryTerm.GAMMA_LENGTH to "gamma",
+                    CommonQueryTerm.CELL_VOLUME to "vol",
+
+                    CommonQueryTerm.STRUCT_FORMULA to "formula",
+                    CommonQueryTerm.CHEM_NAME to "chemname",
+                    CommonQueryTerm.MINERAL to "mineral",
+
+                    CommonQueryTerm.SPACE_GROUP to "sg"
+
+                    )
+            )
 
     )
 
