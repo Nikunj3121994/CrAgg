@@ -23,10 +23,10 @@ enum class CommonQueryTerm(val prettyName : String, val cifID : String, val fiel
     // Cell
 
     A_LENGTH("Cell Length a", "_cell_length_a", AllowableQueryType.NUMERICAL),
-    B_LENGTH("Cell Length b", "_cell_length_b", AllowableQueryType.NUMERICAL),
-    C_LENGTH("Cell Length c", "_cell_length_c", AllowableQueryType.NUMERICAL),
     ALPHA_LENGTH("Cell Angle alpha", "_cell_angle_alpha", AllowableQueryType.NUMERICAL),
+    B_LENGTH("Cell Length b", "_cell_length_b", AllowableQueryType.NUMERICAL),
     BETA_LENGTH("Cell Angle beta", "_cell_angle_beta", AllowableQueryType.NUMERICAL),
+    C_LENGTH("Cell Length c", "_cell_length_c", AllowableQueryType.NUMERICAL),
     GAMMA_LENGTH("Cell Angle gamma", "_cell_angle_gamma", AllowableQueryType.NUMERICAL),
     CELL_VOLUME("Cell Volume", "_cell_volume", AllowableQueryType.NUMERICAL),
 
@@ -42,9 +42,21 @@ enum class CommonQueryTerm(val prettyName : String, val cifID : String, val fiel
 
     // Crystal Chemistry
 
-    FLAG_COORDINATE("Has Coordinates", "", AllowableQueryType.BOOLEAN),
-    FLAG_DISORDER("Has Disorder", "", AllowableQueryType.BOOLEAN),
-    FLAG_FOBS("Has Fobs", "", AllowableQueryType.BOOLEAN);
+    FLAGS(
+            "Various Flags",
+            "",
+            AllowableQueryType.MULTI_MANY_CHOICE.withChoices(
+                    mapOf(
+                            "has coordinates" to "Has Coordinates",
+                            "has disorder" to "Has Disorder",
+                            "has Fobs" to "Has Fobs"
+                    )
+            )
+    ),
+
+    //FLAG_COORDINATE("Has Coordinates", "", AllowableQueryType.BOOLEAN),
+    //FLAG_DISORDER("Has Disorder", "", AllowableQueryType.BOOLEAN),
+    //FLAG_FOBS("Has Fobs", "", AllowableQueryType.BOOLEAN);
 
 
 }

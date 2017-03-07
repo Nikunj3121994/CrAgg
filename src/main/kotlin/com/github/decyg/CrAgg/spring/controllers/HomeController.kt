@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.database.query.TermCategory
+import com.github.decyg.CrAgg.spring.models.SearchModel
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 open class HomeController {
 
-    data class SearchModel(val queryTerms : Array<TermCategory> = TermCategory.values())
-
-    @RequestMapping("/")
+    @RequestMapping(value = "/")
     open fun indexPage(pageModel : Model) : String {
+
+        pageModel.addAttribute("searchmodel", SearchModel())
 
         //TermCategory.valu
         //CommonQueryTerm.

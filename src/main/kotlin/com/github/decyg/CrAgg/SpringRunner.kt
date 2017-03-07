@@ -1,8 +1,6 @@
 package com.github.decyg.CrAgg
 
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.implementation.COD
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.QueryQuantifier

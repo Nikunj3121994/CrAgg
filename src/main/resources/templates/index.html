@@ -7,8 +7,8 @@
 
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
@@ -29,79 +29,96 @@
 
 
 <main>
-    <div class="section no-pad-bot" id="index-banner">
         <div class="container">
-
-            <h4>Search Options</h4>
 
             <br>
 
-            <ul class="collapsible" data-collapsible="expandable">
-                <li>
-                    <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Bibliography</div>
-                    <div class="collapsible-body">
-
-                        <div class="container">
-
-                            <br>
-
-                            <div class="row">
-
-                                <div class="input-field col s12">
-                                    <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-                                    <label for="first_name">First Name</label>
-                                </div>
-
-                                <div class="input-field col s12">
-                                    <input placeholder="Placeholder" id="first_namea" type="text" class="validate">
-                                    <label for="first_name">First Name</label>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </li>
-                <li>
-                    <div class="collapsible-header"><i class="material-icons">filter_drama</i>Cell</div>
-                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                </li>
-                <li>
-                    <div class="collapsible-header"><i class="material-icons">place</i>Chemistry</div>
-                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                </li>
-                <li>
-                    <div class="collapsible-header"><i class="material-icons">whatshot</i>Symmetry </div>
-                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-                </li>
-            </ul>
-
-            <div class="row">
-
-                <div class="input-field left-align col s6">
-                    <a class="waves-effect waves-light btn">Clear</a>
-                </div>
-
-                <div class="input-field right-align col s6">
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
-                </div>
-
+            <div class="card-panel light-blue lighten-1">
+                <span class="white-text">This is a Crystal Chemistry database aggregator and analyser. Please input your
+                terms down below and check the dropdown box to specify what databases you wish to query. Any blank fields
+                won't be searched on. Use the "Quantifier" dropdown to specify how you want that field to be searched.</span>
             </div>
 
 
+            <!--/*@thymesVar id="searchmodel" type="com.github.decyg.CrAgg.spring.models.SearchModel"*/-->
+            <form id="massInput">
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <select multiple required>
+                            <option value="" disabled selected>Choose one or more database(s) to search on</option>
+                            <option th:each="db, it : ${searchmodel.dbOptions}" th:value="${it.index}" th:text="${db.getSimpleName()}"></option>
+                        </select>
+                        <label>Database Selector</label>
+                    </div>
+                </div>
+
+                <ul class="collapsible" data-collapsible="accordion">
+
+
+                    <li th:each="category, it : ${searchmodel.queryTerms}">
+                        <div class="collapsible-header white-text" th:classappend="|${it.count == 1 ? 'active' : ''} ${it.even ? 'green lighten-1' : ' light-blue lighten-1'}|" th:text="${it.current.prettyName}">Category Header</div>
+                        <div class="collapsible-body">
+
+
+                            <br>
+
+                            <div class="row" th:each="query, innerit : ${it.current.catItems}">
+                                <div th:each="i : ${#numbers.sequence(0, 1)}" th:with="indexadd=${!innerit.last ? i : 0}">
+                                    <div th:if="${innerit.odd && !(innerit.last && i == 1)}"  th:with="curquery=${it.current.catItems[innerit.index + indexadd]}" >
+
+                                        <div class="input-field col s4" th:classappend="${innerit.odd && i == 0} ? 'offset-s1'">
+                                            <input placeholder="Placeholder" id="placeholder_id" th:id="${curquery.ordinal()}" type="text" class="validate" th:placeholder="'replace this'">
+                                            <label for="placeholder_id" th:for="${curquery.ordinal()}" th:text="${curquery.prettyName}">Placeholder Entry</label>
+                                        </div>
+
+                                        <div class="input-field col s1">
+                                            <select>
+                                                <option value="" disabled selected>Choose your option</option>
+                                                <option value="1">Option 1</option>
+                                                <option value="2">Option 2</option>
+                                                <option value="3">Option 3</option>
+                                            </select>
+                                            <label>Quantifier</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <div class="row">
+
+                    <div class="input-field col s6 left-align">
+                        <a class="waves-effect waves-light btn">Clear</a>
+                    </div>
+
+                    <div class="input-field col s6 right-align">
+                        <button class="btn waves-effect waves-light" type="submit" name="action" form="massInput">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+
         </div>
-    </div>
+
+
 </main>
 
 
-<footer class="page-footer green">
+<footer class="page-footer green lighten-1">
     <div class="container">
 
         Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
         Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
-        Cussen</a>
-        for all the help and advice.
+        Cussen</a> for all the help and advice.
+        <br>
 
     </div>
 </footer>
@@ -109,8 +126,8 @@
 
 <!--  Scripts-->
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="js/materialize.js"></script>
-<script src="js/init.js"></script>
+<script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
+<script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
 
 </body>
 </html>
