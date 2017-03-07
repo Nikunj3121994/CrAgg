@@ -1,104 +1,116 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Crystal Aggregator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Crystal Aggregator</title>
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
-  <nav class="light-blue lighten-1" role="navigation">
+
+<nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo left">Crystal Aggregator</a>
-      <ul class="right hide-on-med-and-down">
-         <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF_Node</a></li>
-		  <li><a href="index.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
-      </ul>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF_Node</a></li>
+            <li><a href="index.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
+        </ul>
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Navbar Link</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="side-nav">
+            <li><a href="#">Navbar Link</a></li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
-  </nav>
-  <div class="section no-pad-bot" id="index-banner">
+</nav>
+
+
+<main>
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+
+            <h4>Search Options</h4>
+
+            <br>
+
+            <ul class="collapsible" data-collapsible="expandable">
+                <li>
+                    <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Bibliography</div>
+                    <div class="collapsible-body">
+
+                        <div class="container">
+
+                            <br>
+
+                            <div class="row">
+
+                                <div class="input-field col s12">
+                                    <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+                                    <label for="first_name">First Name</label>
+                                </div>
+
+                                <div class="input-field col s12">
+                                    <input placeholder="Placeholder" id="first_namea" type="text" class="validate">
+                                    <label for="first_name">First Name</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="material-icons">filter_drama</i>Cell</div>
+                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="material-icons">place</i>Chemistry</div>
+                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="material-icons">whatshot</i>Symmetry </div>
+                    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+                </li>
+            </ul>
+
+            <div class="row">
+
+                <div class="input-field left-align col s6">
+                    <a class="waves-effect waves-light btn">Clear</a>
+                </div>
+
+                <div class="input-field right-align col s6">
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</main>
+
+
+<footer class="page-footer green">
     <div class="container">
-		
-		<h4>Simple Search</h4>
 
-		<div class="row">
-			<form class="col s12">
-			  <div class="row">
-				<div class="input-field col s6">
-				  <input id="email" type="email" class="validate">
-				  <label for="email" data-error="wrong" data-success="right">Enter a search term...</label>
-				  
-				</div>
-				
-				<div class="input-field col s4">
-					<label>
-						<select multiple>
-							<option value="" disabled selected>Choose database(s) to search on</option>
-							<option value="1">ICSD</option>
-							<option value="2">CCDC</option>
-							<option value="3">COD</option>
-						</select>
-					</label>
-					<label>Database</label>
-				  </div>
-				  
-				  
-				  <div class="input-field col s2">
-				  <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-					<i class="material-icons right">send</i>
-				  </button>
-				  </div>
-			  </div>
-			</form>
-		  </div>
-		  
-		  <h4>Advanced Options</h4>
-		  
-		  <br>
-		  
-		  <ul class="collapsible" data-collapsible="expandable">
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">filter_drama</i>Publisher Options</div>
-			  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-			</li>
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">place</i>Chemical Options</div>
-			  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-			</li>
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">whatshot</i>Custom Query</div>
-			  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-			</li>
-		  </ul>
-		  
-		  
-	  
+        Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
+        Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
+        Cussen</a>
+        for all the help and advice.
+
     </div>
-  </div>
+</footer>
 
 
-  <footer class="page-footer green">
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="orange-text text-lighten-3">Declan Neilson</a>
-      </div>
-    </div>
-  </footer>
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="js/materialize.js"></script>
+<script src="js/init.js"></script>
 
-
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
-
-  </body>
+</body>
 </html>

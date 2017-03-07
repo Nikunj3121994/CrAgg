@@ -68,17 +68,7 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
                 val queryColumn = queryMap[query.key]
 
-                val compText : String = when (query.quantifier) {
-
-                    QueryQuantifier.CONTAINS -> "LIKE"
-                    QueryQuantifier.IS_EXACT -> "="
-                    QueryQuantifier.LESS_THAN -> "<"
-                    QueryQuantifier.LESS_THAN_EQUAL -> "<="
-                    QueryQuantifier.EQUAL -> "="
-                    QueryQuantifier.GREATER_THAN_EQUAL -> ">="
-                    QueryQuantifier.GREATER_THAN -> ">"
-
-                }
+                val compText : String = query.quantifier.dbMap[this::class]!!
 
                 when(query.key.fieldType) {
 

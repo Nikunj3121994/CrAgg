@@ -7,6 +7,7 @@ import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.QueryQuantifier
 import com.github.decyg.CrAgg.database.query.TERM
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.File
 
@@ -25,7 +26,7 @@ fun main(args: Array<String>) {
     //var res = CIFDetailedResult(File("1517271.cif"))
     println("yo")
 
-    //SpringApplication.run(SpringRunner::class.java, *args)
+    SpringApplication.run(SpringRunner::class.java, *args)
 
     val QE = QueryExpression(
             TERM(
@@ -34,9 +35,11 @@ fun main(args: Array<String>) {
     )
 
 
-    val dbRes = DBSingleton.getDBBySource(COD::class).queryDatabase(QE)
+   // val dbRes = DBSingleton.getDBBySource(COD::class).queryDatabase(QE)
 
-    val dbResSpec = DBSingleton.getDBBySource(COD::class).queryDatabaseSpecific(dbRes[0])
+   // val dbResSpec = DBSingleton.getDBBySource(COD::class).queryDatabaseSpecific(dbRes[0])
+
+  //  println(dbResSpec)
 
     println("all done")
 }
