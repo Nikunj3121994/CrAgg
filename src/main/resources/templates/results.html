@@ -1,93 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Crystal Aggregator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Crystal Aggregator</title>
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
-  <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo left">Crystal Aggregator</a>
-      <ul class="right hide-on-med-and-down">
-         <li><a href="sass.html"><i class="material-icons left">input</i>Upload CIF_Node</a></li>
-		  <li><a href="sass.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
-      </ul>
 
-      <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Navbar Link</a></li>
-      </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
+            <li><a href="index.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
+        </ul>
     </div>
-  </nav>
-  <div class="section no-pad-bot" id="index-banner">
+</nav>
+
+
+<main>
     <div class="container">
-		
-		<h4>Results for query:</h4>
 
-	
-		  
-		  <ul class="collapsible" data-collapsible="expandable">
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">info_outline</i>Crystal Info</div>
-			  <div class="collapsible-body">
-				
-				<p>
-				
-Coll. Code:		193235 <br>
+        <br>
 
-HMS:			P 1 21/n 1 <br>
+        <div class="card-panel light-blue lighten-1">
+                <span class="white-text">The results for your query: xxx are listed below, xxx number of results were
+                found.</span>
+        </div>
 
-Struct. Form	Sr2 Yb Nb O6 <br>
 
-Struct. Type	Perovskite-Ba2LaRuO6 <br>
 
-Title			Structural and magnetic study of Yb(3+) in the perovskites Sr2 Yb M O6 (M=Nb, Ta, Sb) <br>
-
-Authors			Coomer, Fiona C.; Campbell, John; Giordano, Nico; Collins, Oonagh M.; Cussen, Edmund J. <br>
-
-Reference 		Journal of Solid State Chemistry (2015) 221, p411-p417 <br>
-				</p>
-			  </div>
-			</li>
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">trending_up</i>Graphs</div>
-			  <div class="collapsible-body">
-				<p><img src="../../../../../../Desktop/mockup/img/img.jpg"></p>
-			  </div>
-			</li>
-			<li>
-			  <div class="collapsible-header"><i class="material-icons">view_list</i>Metrics</div>
-			  <div class="collapsible-body">
-				<p>Lorem ipsum dolor sit amet.</p>
-			  </div>
-			</li>
-		  </ul>
-		  
-		  
-	  
     </div>
-  </div>
 
 
-  <footer class="page-footer green">
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="orange-text text-lighten-3">Declan Neilson</a>
-      </div>
+</main>
+
+
+<footer class="page-footer white-text green lighten-1">
+    <div class="container">
+
+        Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
+        Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
+        Cussen</a> for all the help and advice.
+        <br>
+
     </div>
-  </footer>
+</footer>
 
 
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="js/materialize.js"></script>
-  <script src="js/init.js"></script>
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
+<script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
 
-  </body>
+</body>
 </html>

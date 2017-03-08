@@ -19,24 +19,24 @@ enum class QueryQuantifier(val dbMap : Map<DBSource, String>){
 
     // Numerical
 
-    GREATER_THAN(mapOf(
-            COD::class to ">"
-    )),
-
-    GREATER_THAN_EQUAL(mapOf(
-            COD::class to ">="
-    )),
-
     EQUAL(mapOf(
             COD::class to "="
     )),
 
-    LESS_THAN_EQUAL(mapOf(
-            COD::class to "<="
+    GREATER_THAN(mapOf(
+            COD::class to ">"
+    )),
+
+    GREATER_EQUAL(mapOf(
+            COD::class to ">="
     )),
 
     LESS_THAN(mapOf(
             COD::class to "<"
+    )),
+
+    LESS_EQUAL(mapOf(
+            COD::class to "<="
     ));
 
 }

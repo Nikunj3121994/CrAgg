@@ -9,40 +9,126 @@ package com.github.decyg.CrAgg.database.query
  *
  * Created by declan on 01/03/2017.
  */
-enum class CommonQueryTerm(val prettyName : String, val cifID : String, val fieldType : AllowableQueryType) {
+enum class CommonQueryTerm(val cifID: String, val prettyName: String, val example: String, val fieldType: AllowableQueryType) {
 
     // Bibliography (covers data pertaining to publication)
 
-    ID("Identifier", "", AllowableQueryType.TEXT),
-    AUTHOR("Author", "_publ_author_name", AllowableQueryType.TEXT),
-    ARTICLE("Article Title", "", AllowableQueryType.TEXT),
-    JOURNAL("Journal Title", "_journal_name_full", AllowableQueryType.TEXT),
-    JOURNAL_DOI("Journal DOI", "_journal_paper_doi", AllowableQueryType.TEXT),
-    YEAR("Year of Publication", "_journal_year", AllowableQueryType.NUMERICAL),
+    ID(
+            "",
+            "Identifier",
+            "database source specific ID",
+            AllowableQueryType.TEXT
+    ),
+    AUTHOR(
+            "_publ_author_name",
+            "Author",
+            "Laval",
+            AllowableQueryType.TEXT
+    ),
+    ARTICLE(
+            "",
+            "Article Title",
+            "Synthesis and crystal structure of NaSrAlF~6~",
+            AllowableQueryType.TEXT
+    ),
+    JOURNAL(
+            "_journal_name_full",
+            "Journal Title",
+            "European Journal of Solid State Inorganic Chemistry",
+            AllowableQueryType.TEXT
+    ),
+    JOURNAL_DOI(
+            "_journal_paper_doi",
+            "Journal DOI",
+            "10.1016/0022-4596(90)90080-H",
+            AllowableQueryType.TEXT
+    ),
+    YEAR(
+            "_journal_year",
+            "Year of Publication",
+            "2000",
+            AllowableQueryType.NUMERICAL
+    ),
 
     // Cell
 
-    A_LENGTH("Cell Length a", "_cell_length_a", AllowableQueryType.NUMERICAL),
-    ALPHA_LENGTH("Cell Angle alpha", "_cell_angle_alpha", AllowableQueryType.NUMERICAL),
-    B_LENGTH("Cell Length b", "_cell_length_b", AllowableQueryType.NUMERICAL),
-    BETA_LENGTH("Cell Angle beta", "_cell_angle_beta", AllowableQueryType.NUMERICAL),
-    C_LENGTH("Cell Length c", "_cell_length_c", AllowableQueryType.NUMERICAL),
-    GAMMA_LENGTH("Cell Angle gamma", "_cell_angle_gamma", AllowableQueryType.NUMERICAL),
-    CELL_VOLUME("Cell Volume", "_cell_volume", AllowableQueryType.NUMERICAL),
+    A_LENGTH(
+            "_cell_length_a",
+            "Cell Length a",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    ALPHA_LENGTH(
+            "_cell_angle_alpha",
+            "Cell Angle alpha",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    B_LENGTH(
+            "_cell_length_b",
+            "Cell Length b",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    BETA_LENGTH(
+            "_cell_angle_beta",
+            "Cell Angle beta",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    C_LENGTH(
+            "_cell_length_c",
+            "Cell Length c",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    GAMMA_LENGTH(
+            "_cell_angle_gamma",
+            "Cell Angle gamma",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
+    CELL_VOLUME(
+            "_cell_volume",
+            "Cell Volume",
+            "a double value",
+            AllowableQueryType.NUMERICAL
+    ),
 
     // Chemistry
 
-    STRUCT_FORMULA("Structural Formula", "_chemical_formula_sum", AllowableQueryType.TEXT),
-    CHEM_NAME("Chemical Name", "_chemical_name_systematic", AllowableQueryType.TEXT),
-    MINERAL("Mineral Name", "_chemical_name_mineral", AllowableQueryType.TEXT),
+    STRUCT_FORMULA(
+            "_chemical_formula_sum",
+            "Structural Formula",
+            "B6 La",
+            AllowableQueryType.TEXT
+    ),
+    CHEM_NAME(
+            "_chemical_name_systematic",
+            "Chemical Name",
+            "Magnesium Hydroxide",
+            AllowableQueryType.TEXT
+    ),
+    MINERAL(
+            "_chemical_name_mineral",
+            "Mineral Name",
+            "Cassiterite",
+            AllowableQueryType.TEXT
+    ),
 
     // Symmetry
 
-    SPACE_GROUP("H-M Space Group", "_symmetry_space_group_name_H-M", AllowableQueryType.TEXT),
+    SPACE_GROUP(
+            "_symmetry_space_group_name_H-M",
+            "H-M Space Group",
+            "P m 3 m",
+            AllowableQueryType.TEXT
+    ),
 
     // Crystal Chemistry
 
     FLAGS(
+            "",
             "Various Flags",
             "",
             AllowableQueryType.MULTI_MANY_CHOICE.withChoices(

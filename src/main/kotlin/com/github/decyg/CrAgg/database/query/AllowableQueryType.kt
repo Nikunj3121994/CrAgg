@@ -7,10 +7,10 @@ enum class AllowableQueryType(val allowedQuantifiers : List<QueryQuantifier>) {
 
     NUMERICAL(
             listOf(
-                    QueryQuantifier.GREATER_THAN,
-                    QueryQuantifier.GREATER_THAN_EQUAL,
                     QueryQuantifier.EQUAL,
-                    QueryQuantifier.LESS_THAN_EQUAL,
+                    QueryQuantifier.GREATER_EQUAL,
+                    QueryQuantifier.GREATER_THAN,
+                    QueryQuantifier.LESS_EQUAL,
                     QueryQuantifier.LESS_THAN
             )
     ),
@@ -22,11 +22,7 @@ enum class AllowableQueryType(val allowedQuantifiers : List<QueryQuantifier>) {
             )
     ),
 
-    MULTI_SINGLE_CHOICE(
-            listOf(
-                    QueryQuantifier.IS_EXACT
-            )
-    ),
+    MULTI_SINGLE_CHOICE(emptyList()),
 
     MULTI_MANY_CHOICE(emptyList());
 

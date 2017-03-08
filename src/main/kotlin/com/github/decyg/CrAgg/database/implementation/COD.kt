@@ -36,7 +36,7 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
         val curSession = DefaultSession(con, MysqlDialect())
 
-        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)}"
+        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT 100"
 
         val dataResults = curSession.select(sql) {
 

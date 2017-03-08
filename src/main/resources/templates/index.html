@@ -14,16 +14,11 @@
 <body>
 
 <nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo left">Crystal Aggregator</a>
+    <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF_Node</a></li>
+            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
             <li><a href="index.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
         </ul>
-
-        <ul id="nav-mobile" class="side-nav">
-            <li><a href="#">Navbar Link</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
 </nav>
 
@@ -41,13 +36,14 @@
 
 
             <!--/*@thymesVar id="searchmodel" type="com.github.decyg.CrAgg.spring.models.SearchModel"*/-->
-            <form id="massInput">
+            <!--/*@thymesVar id="resultList" type="com.github.decyg.CrAgg.spring.models.SearchResultModel"*/-->
+            <form id="massInput" action="#" th:action="@{/results}" th:object="${resultList}" method="post">
 
                 <div class="row">
                     <div class="input-field col s12">
-                        <select multiple required>
+                        <select multiple required th:field="*{dbList}">
                             <option value="" disabled selected>Choose one or more database(s) to search on</option>
-                            <option th:each="db, it : ${searchmodel.dbOptions}" th:value="${it.index}" th:text="${db.getSimpleName()}"></option>
+                            <option th:each="db, it : ${searchmodel.dbOptions}" th:value="${db.getSimpleName()}" th:text="${db.getSimpleName()}"></option>
                         </select>
                         <label>Database Selector</label>
                     </div>
@@ -58,7 +54,7 @@
 
                     <li th:each="category, it : ${searchmodel.queryTerms}">
                         <div class="collapsible-header white-text" th:classappend="|${it.count == 1 ? 'active' : ''} ${it.even ? 'green lighten-1' : ' light-blue lighten-1'}|" th:text="${it.current.prettyName}">Category Header</div>
-                        <div class="collapsible-body">
+                        <div class="collapsible-body grey lighten-4">
 
 
                             <br>
@@ -67,19 +63,32 @@
                                 <div th:each="i : ${#numbers.sequence(0, 1)}" th:with="indexadd=${!innerit.last ? i : 0}">
                                     <div th:if="${innerit.odd && !(innerit.last && i == 1)}"  th:with="curquery=${it.current.catItems[innerit.index + indexadd]}" >
 
-                                        <div class="input-field col s4" th:classappend="${innerit.odd && i == 0} ? 'offset-s1'">
-                                            <input placeholder="Placeholder" id="placeholder_id" th:id="${curquery.ordinal()}" type="text" class="validate" th:placeholder="'replace this'">
-                                            <label for="placeholder_id" th:for="${curquery.ordinal()}" th:text="${curquery.prettyName}">Placeholder Entry</label>
+                                        <div th:if="${curquery.fieldType == curquery.fieldType.TEXT || curquery.fieldType == curquery.fieldType.NUMERICAL}">
+
+                                            <div class="input-field col s3" th:classappend="${innerit.odd && i == 0} ? 'offset-s1'">
+                                                <input th:field="*{termMap[__${curquery}__]}" placeholder="Placeholder" id="placeholder_id" th:id="${curquery.ordinal()}" type="text" th:type="${curquery.fieldType == curquery.fieldType.TEXT ? 'text' : 'number'}" class="validate" th:placeholder="'e.g. ' + ${curquery.example}">
+                                                <label for="placeholder_id" th:for="${curquery.ordinal()}" th:text="${curquery.prettyName}">Placeholder Entry</label>
+                                            </div>
+
+                                            <div class="input-field col s2">
+                                                <select th:field="*{quantifierMap[__${curquery}__]}">
+                                                    <option th:each="allowablequery, itq : ${curquery.fieldType.allowedQuantifiers}" th:value="${allowablequery}" th:text="${allowablequery.name()}">Placeholder option</option>
+                                                </select>
+                                                <label>Quantifier</label>
+                                            </div>
+
                                         </div>
 
-                                        <div class="input-field col s1">
-                                            <select>
-                                                <option value="" disabled selected>Choose your option</option>
-                                                <option value="1">Option 1</option>
-                                                <option value="2">Option 2</option>
-                                                <option value="3">Option 3</option>
-                                            </select>
-                                            <label>Quantifier</label>
+                                        <div th:if="${curquery.fieldType == curquery.fieldType.MULTI_MANY_CHOICE || curquery.fieldType == curquery.fieldType.MULTI_SINGLE_CHOICE}">
+
+                                            <div class="input-field col s5" th:classappend="${innerit.odd && i == 0} ? 'offset-s1'">
+                                                <select th:field="*{termMap[__${curquery}__]}" th:multiple="${curquery.fieldType == curquery.fieldType.MULTI_MANY_CHOICE}">
+                                                    <option value="" disabled selected>Choose your option</option>
+                                                    <option th:each="choice, iter : ${curquery.fieldType.presetChoices}" th:value="${choice.key}" th:text="${choice.value}">Placeholder option</option>
+                                                </select>
+                                                <label th:text="${curquery.prettyName}">Placeholder Label</label>
+                                            </div>
+
                                         </div>
 
                                     </div>
@@ -88,22 +97,22 @@
                         </div>
                     </li>
                 </ul>
-
-
-                <div class="row">
-
-                    <div class="input-field col s6 left-align">
-                        <a class="waves-effect waves-light btn">Clear</a>
-                    </div>
-
-                    <div class="input-field col s6 right-align">
-                        <button class="btn waves-effect waves-light" type="submit" name="action" form="massInput">Submit
-                            <i class="material-icons right">send</i>
-                        </button>
-                    </div>
-
-                </div>
             </form>
+
+            <div class="row">
+
+                <div class="input-field col s6 left-align">
+                    <a class="waves-effect waves-light btn">Clear</a>
+                </div>
+
+                <div class="input-field col s6 right-align">
+                    <button class="btn waves-effect waves-light" type="submit" name="action" form="massInput">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+
+            </div>
+
 
 
         </div>
@@ -112,7 +121,7 @@
 </main>
 
 
-<footer class="page-footer green lighten-1">
+<footer class="page-footer white-text green lighten-1">
     <div class="container">
 
         Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.

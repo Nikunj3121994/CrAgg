@@ -51,6 +51,8 @@ enum class TermCategory(val prettyName: String, val prettyDescription: String, v
     CRYSTAL_CHEM(
             "Crystal Chemistry",
             "Toggles",
-            emptySet()
+            sortedSetOf(
+                    CommonQueryTerm.FLAGS
+            )
     ) // maybe not
 }
