@@ -5,4 +5,4 @@ import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 /**
  * Created by declan on 08/03/2017.
  */
-data class ResultModel(val briefResults : List<CIFBriefResult>)
+data class BriefResultsModel(val briefResults : List<CIFBriefResult>)

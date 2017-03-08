@@ -7,8 +7,10 @@ import com.github.decyg.CrAgg.database.query.AND
 import com.github.decyg.CrAgg.database.query.AllowableQueryType
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.TERM
+import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,7 +25,7 @@ import javax.validation.Valid
 open class ResultsController {
 
     @RequestMapping(value = "/results", method = arrayOf(RequestMethod.POST))
-    open fun indexPage(@Valid @ModelAttribute("resultList") resultModel : SearchResultModel, bindingResult : BindingResult) : String {
+    open fun indexPage(@Valid @ModelAttribute("resultList") resultModel : SearchResultModel, bindingResult : BindingResult, pageModel : Model) : String {
 
         println(resultModel)
 
@@ -68,11 +70,8 @@ open class ResultsController {
                 .map { DBSingleton.getDBBySource(it).queryDatabase(qExp!!) }
                 .forEach { aggregateResults.addAll(it) }
 
-        println(aggregateResults)
-        //pageModel.addAttribute("searchmodel", SearchModel())
+        pageModel.addAttribute("resultsModel", BriefResultsModel(aggregateResults))
 
-        //TermCategory.valu
-        //CommonQueryTerm.
         return "results"
     }
 

@@ -33,6 +33,11 @@
                 found.</span>
         </div>
 
+        <!--/*@thymesVar id="resultsModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
+        <ul class="collection">
+            <li th:each="item : ${resultsModel.briefResults}" class="collection-item" th:text="${item.chemFormula}">Alvin</li>
+        </ul>
+
 
 
     </div>
