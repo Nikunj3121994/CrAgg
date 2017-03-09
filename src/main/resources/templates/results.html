@@ -22,22 +22,66 @@
     </div>
 </nav>
 
-
+<!--/*@thymesVar id="constants" type="com.github.decyg.CrAgg.utils.Constants"*/-->
+<!--/*@thymesVar id="totalNumResults" type="java.lang.Integer"*/-->
+<!--/*@thymesVar id="totalMaxResults" type="java.lang.Integer"*/-->
+<!--/*@thymesVar id="pageNum" type="java.lang.Integer"*/-->
+<!--/*@thymesVar id="briefResultModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
 <main>
     <div class="container">
 
         <br>
 
         <div class="card-panel light-blue lighten-1">
-                <span class="white-text">The results for your query: xxx are listed below, xxx number of results were
-                found.</span>
+                <span class="white-text" th:text="${totalMaxResults} + ' results have been found for your query.'">Text here.</span>
         </div>
 
-        <!--/*@thymesVar id="resultsModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
-        <ul class="collection">
-            <li th:each="item : ${resultsModel.briefResults}" class="collection-item" th:text="${item.chemFormula}">Alvin</li>
-        </ul>
+        <div class="row">
 
+            <!-- Programatically change to clear all when clicked? -->
+            <a class="waves-effect waves-light btn-large left-align col s2">Select All</a>
+
+            <ul class="pagination right-align col s10">
+
+                <!-- waves-effect for not selected-->
+                <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
+                    <a href="#!" th:href="${'/results?page=' + (i + 1)}" th:text="${i + 1}">1</a>
+                </li>
+
+
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="collection">
+                <a th:each="item : ${briefResultModel.briefResults}" class="collection-item">
+                    <div class="container">
+                        <h5 th:text="${item.id.first.simpleName + ' : ' + item.id.second}">Header</h5>
+                        <div class="row">
+                            <div class="col s6" th:text="'Compound Name: ' + ${item.compoundName}"></div>
+                            <div class="col s6" th:text="'Chemical Formula: ' + ${item.chemFormula}"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col s6" th:text="'Journal Title: ' + ${item.journalTitle}"></div>
+                            <div class="col s6" th:text="'Authors: ' + ${item.authors}"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col s6" th:text="'Space Group: ' + ${item.spaceGroup}"></div>
+                            <div class="col s6"
+                                 th:text="'Unit Cell: ' + ${item.cellAsString()}"
+                            ></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <a class="waves-effect waves-light btn-large left-align col s3">Download Selected</a>
+            <a class="waves-effect waves-light btn-large left-align col s3 offset-s6">Star Selected</a>
+
+        </div>
 
 
     </div>

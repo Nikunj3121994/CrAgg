@@ -1,20 +1,17 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.cif.results.CIFBriefResult
-import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.DBSource
-import com.github.decyg.CrAgg.database.query.AND
-import com.github.decyg.CrAgg.database.query.AllowableQueryType
-import com.github.decyg.CrAgg.database.query.QueryExpression
-import com.github.decyg.CrAgg.database.query.TERM
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
+import com.github.decyg.CrAgg.utils.Constants
 import org.springframework.stereotype.Controller
+import org.springframework.stereotype.Service
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
+import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 /**
@@ -22,57 +19,54 @@ import javax.validation.Valid
  */
 
 @Controller
+@Service
 open class ResultsController {
 
     @RequestMapping(value = "/results", method = arrayOf(RequestMethod.POST))
-    open fun indexPage(@Valid @ModelAttribute("resultList") resultModel : SearchResultModel, bindingResult : BindingResult, pageModel : Model) : String {
+    open fun resultsPage(
+            @Valid @ModelAttribute("resultList") resultModel : SearchResultModel,
+            @RequestParam("page", required = false) pageNum : Int?,
+            bindingResult : BindingResult,
+            pageModel : Model,
+            session : HttpSession
+    ) : String {
 
-        println(resultModel)
+        val briefResModel = resultModel.toBriefResultsModel()
 
+        pageModel.addAttribute("pageNum", pageNum ?: 1)
+        pageModel.addAttribute("totalNumResults", briefResModel.briefResults.size / Constants.RESULTS_PER_PAGE)
+        pageModel.addAttribute("totalMaxResults", briefResModel.briefResults.size)
+        pageModel.addAttribute("briefResultModel", briefResModel.paginate())
 
-        // First generate the query expression object from the input enums
-        // Right now this is pretty basic and just chains ANDS but it has enough
-        // modularity to support complex queries in the future
-
-        var qExp : QueryExpression? = null
-
-        resultModel.termMap
-                .filter { it.value != null && it.value.trim() != "" }
-                .forEach { queryTerm, userTerm ->
-                    val quant = resultModel.quantifierMap[queryTerm]!!
-                    val term : TERM = when(queryTerm.fieldType){
-
-                        AllowableQueryType.NUMERICAL -> TERM(queryTerm, quant, numericalTerm = userTerm.toDouble())
-                        AllowableQueryType.TEXT -> TERM(queryTerm, quant, textTerm = userTerm)
-                        AllowableQueryType.MULTI_SINGLE_CHOICE -> TERM(queryTerm, quant, textTerm = userTerm)
-                        AllowableQueryType.MULTI_MANY_CHOICE -> TERM(queryTerm, quant, textTerm = userTerm)
-
-                    }
-
-                    if(qExp == null) {
-                        qExp = QueryExpression(term)
-                    } else {
-                        qExp = QueryExpression(AND(qExp!!.expression, term))
-                    }
-
-                }
-
-        println(qExp)
-
-
-        // Then perform the queries and compound them into one big list
-
-        val sourcesToQuery : List<DBSource> = resultModel.dbList.map { strInput -> DBSingleton.datasetMap.keys.find { it.simpleName == strInput }!! }
-        val aggregateResults : MutableList<CIFBriefResult> = mutableListOf()
-
-
-        sourcesToQuery
-                .map { DBSingleton.getDBBySource(it).queryDatabase(qExp!!) }
-                .forEach { aggregateResults.addAll(it) }
-
-        pageModel.addAttribute("resultsModel", BriefResultsModel(aggregateResults))
+        session.setAttribute("briefResultModel", briefResModel)
+        session.setAttribute("resultList", resultModel)
 
         return "results"
     }
 
+    @RequestMapping(value = "/results", method = arrayOf(RequestMethod.GET))
+    open fun resultsPageByPage(
+            //@Valid @ModelAttribute("resultList") resultModel : SearchResultModel,
+            @RequestParam("page") pageNum : Int,
+            pageModel : Model,
+            session : HttpSession
+    ) : String {
+
+        if(session.getAttribute("briefResultModel") == null || session.getAttribute("resultList") == null)
+            return "index"
+
+        val maxPages = Constants.TOTAL_RESULTS / Constants.RESULTS_PER_PAGE
+        val minPages = 1
+
+        val limitedPage = pageNum.coerceIn(minPages, maxPages)
+
+        val resModel : BriefResultsModel = session.getAttribute("briefResultModel") as BriefResultsModel
+
+        pageModel.addAttribute("pageNum", limitedPage)
+        pageModel.addAttribute("totalNumResults", resModel.briefResults.size / Constants.RESULTS_PER_PAGE)
+        pageModel.addAttribute("totalMaxResults", resModel.briefResults.size)
+        pageModel.addAttribute("briefResultModel", resModel.paginate(limitedPage))
+
+        return "results"
+    }
 }

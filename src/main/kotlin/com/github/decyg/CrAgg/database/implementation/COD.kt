@@ -6,7 +6,9 @@ import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.database.DBAbstraction
+import com.github.decyg.CrAgg.database.DB_UUID
 import com.github.decyg.CrAgg.database.query.*
+import com.github.decyg.CrAgg.utils.Constants
 import java.net.URL
 import java.sql.DriverManager
 import java.util.*
@@ -16,8 +18,6 @@ import java.util.*
  * Created by declan on 01/03/2017.
  */
 class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
-
-    data class COD_Res(val fileID: Int, val author: String, val spaceGroup: String?, val compoundName: String?, val chemFormula: String?)
 
     override fun queryDatabaseSpecific(specificResult: CIFBriefResult): CIFDetailedResult {
 
@@ -36,16 +36,26 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
         val curSession = DefaultSession(con, MysqlDialect())
 
-        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT 100"
+        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT ${Constants.TOTAL_RESULTS}"
 
         val dataResults = curSession.select(sql) {
 
             row -> CIFBriefResult(
-                this::class,
-                row.int(queryMap[CommonQueryTerm.ID]!!).toString(),
-                row.stringOrNull(queryMap[CommonQueryTerm.SPACE_GROUP]!!).orEmpty(),
-                row.stringOrNull(queryMap[CommonQueryTerm.CHEM_NAME]!!).orEmpty(),
-                row.stringOrNull(queryMap[CommonQueryTerm.STRUCT_FORMULA]!!).orEmpty()
+                DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
+                row.stringOrNull(queryMap[CommonQueryTerm.SPACE_GROUP]!!) ?: "N/A",
+                mapOf(
+                        CommonQueryTerm.A_LENGTH to row.double(queryMap[CommonQueryTerm.A_LENGTH]!!),
+                        CommonQueryTerm.B_LENGTH to row.double(queryMap[CommonQueryTerm.B_LENGTH]!!),
+                        CommonQueryTerm.C_LENGTH to row.double(queryMap[CommonQueryTerm.C_LENGTH]!!),
+                        CommonQueryTerm.ALPHA_LENGTH to row.double(queryMap[CommonQueryTerm.ALPHA_LENGTH]!!),
+                        CommonQueryTerm.BETA_LENGTH to row.double(queryMap[CommonQueryTerm.BETA_LENGTH]!!),
+                        CommonQueryTerm.GAMMA_LENGTH to row.double(queryMap[CommonQueryTerm.GAMMA_LENGTH]!!),
+                        CommonQueryTerm.CELL_VOLUME to row.double(queryMap[CommonQueryTerm.CELL_VOLUME]!!)
+                ),
+                row.stringOrNull(queryMap[CommonQueryTerm.CHEM_NAME]!!) ?: "N/A",
+                row.stringOrNull(queryMap[CommonQueryTerm.STRUCT_FORMULA]!!) ?: "N/A",
+                row.stringOrNull(queryMap[CommonQueryTerm.AUTHOR]!!) ?: "N/A",
+                row.stringOrNull(queryMap[CommonQueryTerm.JOURNAL]!!) ?: "N/A"
                 )
 
         }

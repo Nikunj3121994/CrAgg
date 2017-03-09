@@ -10,10 +10,7 @@ import kotlin.reflect.KClass
  */
 
 typealias DBSource = KClass<out DBAbstraction>
-
-fun DBSource.toString() : String{
-    return this.simpleName ?: ""
-}
+typealias DB_UUID = Pair<DBSource, String>
 
 object DBSingleton {
 
