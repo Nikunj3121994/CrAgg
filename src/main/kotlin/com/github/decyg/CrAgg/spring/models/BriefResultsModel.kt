@@ -17,6 +17,9 @@ data class BriefResultsModel(val briefResults : MutableList<CIFBriefResult>) {
         // chunk it into pages for pagination, see Constants for limits
         // can get the index to start at with (page - 1) * RESULTS_PER_PAGE
 
+        if(briefResults.size == 0)
+            return BriefResultsModel(mutableListOf())
+
         val startIndex = (page - 1) * Constants.RESULTS_PER_PAGE
         val endIndex = (startIndex + Constants.RESULTS_PER_PAGE).coerceAtMost(briefResults.size - 1)
 
