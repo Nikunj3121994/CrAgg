@@ -69,4 +69,5 @@ open class ResultsController {
 
         return "results"
     }
+
 }

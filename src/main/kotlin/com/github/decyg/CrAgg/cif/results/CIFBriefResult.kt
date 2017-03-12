@@ -19,14 +19,13 @@ data class CIFBriefResult(
         val authors : String, // The authors
         val journalTitle : String // The journal
 ) {
-    fun cellAsString() : String{
+    fun cellAsString() : String {
 
-        return  "|a: ${unitCell[CommonQueryTerm.A_LENGTH]} Å| " +
-                "|b: ${unitCell[CommonQueryTerm.B_LENGTH]} Å| " +
-                "|c: ${unitCell[CommonQueryTerm.C_LENGTH]} Å| " +
-                "|α: ${unitCell[CommonQueryTerm.ALPHA_LENGTH]} °| " +
-                "|β: ${unitCell[CommonQueryTerm.BETA_LENGTH]} °| " +
-                "|γ: ${unitCell[CommonQueryTerm.GAMMA_LENGTH]} °| " +
-                "|Vol: ${unitCell[CommonQueryTerm.CELL_VOLUME]} Å3|"
+        return  "a: ${unitCell[CommonQueryTerm.A_LENGTH]} Å " +
+                "b: ${unitCell[CommonQueryTerm.B_LENGTH]} Å " +
+                "c: ${unitCell[CommonQueryTerm.C_LENGTH]} Å " +
+                "α: ${unitCell[CommonQueryTerm.ALPHA_LENGTH]} ° " +
+                "β: ${unitCell[CommonQueryTerm.BETA_LENGTH]} ° " +
+                "γ: ${unitCell[CommonQueryTerm.GAMMA_LENGTH]} ° "
     }
 }

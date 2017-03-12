@@ -5,7 +5,7 @@ package com.github.decyg.CrAgg.utils
  */
 object Constants {
 
-    val RESULTS_PER_PAGE = 10
-    val TOTAL_RESULTS = 100
+    val RESULTS_PER_PAGE = 5
+    val TOTAL_RESULTS = 50
 
 }

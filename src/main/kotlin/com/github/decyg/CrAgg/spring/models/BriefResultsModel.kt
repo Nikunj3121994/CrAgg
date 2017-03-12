@@ -21,7 +21,7 @@ data class BriefResultsModel(val briefResults : MutableList<CIFBriefResult>) {
             return BriefResultsModel(mutableListOf())
 
         val startIndex = (page - 1) * Constants.RESULTS_PER_PAGE
-        val endIndex = (startIndex + Constants.RESULTS_PER_PAGE).coerceAtMost(briefResults.size - 1)
+        val endIndex = (startIndex + Constants.RESULTS_PER_PAGE).coerceAtMost(briefResults.size)
 
         return BriefResultsModel(briefResults.subList(startIndex, endIndex))
 

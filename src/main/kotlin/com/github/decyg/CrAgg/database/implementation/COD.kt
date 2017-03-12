@@ -9,6 +9,7 @@ import com.github.decyg.CrAgg.database.DBAbstraction
 import com.github.decyg.CrAgg.database.DB_UUID
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.utils.Constants
+import java.io.InputStream
 import java.net.URL
 import java.sql.DriverManager
 import java.util.*
@@ -18,6 +19,17 @@ import java.util.*
  * Created by declan on 01/03/2017.
  */
 class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
+
+
+    override fun getStreamForID(cifID: DB_UUID): InputStream {
+
+        val cifFile = URL("http://www.crystallography.net/cod/${cifID.second}.cif").readText()
+
+        println(cifFile)
+
+        return cifFile.byteInputStream()
+
+    }
 
     override fun queryDatabaseSpecific(specificResult: CIFBriefResult): CIFDetailedResult {
 

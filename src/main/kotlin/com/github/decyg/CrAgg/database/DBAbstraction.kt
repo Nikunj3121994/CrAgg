@@ -4,6 +4,7 @@ import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
+import java.io.InputStream
 
 /**
  * This is an abstraction of the database access process, there's two main methods.
@@ -20,12 +21,17 @@ interface DBAbstraction {
      * Should take in a list of query wrappers, form them into a query of the relevant format and then
      * return a list of wrapped CIFResults formed from the result set
      */
-    abstract fun queryDatabase(query : QueryExpression) : List<CIFBriefResult>
+    fun queryDatabase(query : QueryExpression) : List<CIFBriefResult>
 
     /**
      * Takes in a single CIFBriefResult selected from the queryDatabase function above, then returns a parsed CIF_Node file in
      * the format of a CIFNode tree
      */
-    abstract fun queryDatabaseSpecific(specificResult : CIFBriefResult) : CIFDetailedResult
+    fun queryDatabaseSpecific(specificResult : CIFBriefResult) : CIFDetailedResult
+
+    /**
+     * Takes in an OutputStream and the ID of the entry and streams the file to it, wherever it comes from
+     */
+    fun getStreamForID(cifID : DB_UUID) : InputStream
 
 }

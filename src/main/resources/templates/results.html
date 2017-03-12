@@ -13,6 +13,11 @@
 
 <body>
 
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
+<script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
+
 <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
         <ul class="right hide-on-med-and-down">
@@ -45,7 +50,7 @@
                 <ul class="pagination right-align col s10">
 
                     <!-- waves-effect for not selected-->
-                    <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
+                    <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
                         <a href="#!" th:href="${'/results?page=' + (i + 1)}" th:text="${i + 1}">1</a>
                     </li>
 
@@ -54,27 +59,86 @@
             </div>
 
             <div class="row">
-                <div class="collection">
-                    <a th:each="item : ${briefResultModel.briefResults}" class="collection-item">
-                        <div class="container">
-                            <h5 th:text="${item.id.first.simpleName + ' : ' + item.id.second}">Header</h5>
-                            <div class="row">
-                                <div class="col s6" th:text="'Compound Name: ' + ${item.compoundName}"></div>
-                                <div class="col s6" th:text="'Chemical Formula: ' + ${item.chemFormula}"></div>
+                <ul class="collection z-depth-4">
+                    <li th:each="item, iter : ${briefResultModel.briefResults}" class="collection-item" th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'">
+
+                        <!-- add to selection tick  th:onclick="'toggleResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'" -->
+                        <div class="row">
+
+                            <h5 class="col s12 center-align" th:text="${item.id.first.simpleName + ' : ' + item.id.second}">Header</h5>
+
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="row">
+                            <div class="card col s6">
+                                <h6>Compound Name</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.compoundName}">N/A</p>
                             </div>
-                            <div class="row">
-                                <div class="col s6" th:text="'Journal Title: ' + ${item.journalTitle}"></div>
-                                <div class="col s6" th:text="'Authors: ' + ${item.authors}"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col s6" th:text="'Space Group: ' + ${item.spaceGroup}"></div>
-                                <div class="col s6"
-                                     th:text="'Unit Cell: ' + ${item.cellAsString()}"
-                                ></div>
+                            <div class="card col s6">
+                                <h6>Chemical Formula</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.chemFormula}">N/A</p>
                             </div>
                         </div>
-                    </a>
-                </div>
+                        <div class="row">
+                            <div class="card col s6">
+                                <h6>Journal Title</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.journalTitle}">N/A</p>
+                            </div>
+                            <div class="card col s6">
+                                <h6>Authors</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.authors}">N/A</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="card col s6">
+                                <h6>Space Group</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.spaceGroup}">N/A</p>
+                            </div>
+                            <div class="card col s6">
+                                <h6>Unit Cell</h6>
+                                <div class="divider"></div>
+                                <p th:text="${item.cellAsString()}">N/A</p>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <br>
+
+                        <div class="row">
+
+                            <div class="col s6 left-align">
+                                <a class="waves-effect waves-light btn" th:onclick="'toggleResultSelected(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
+                                    <i class="material-icons left">check_box_outline_blank</i>
+                                    <span>select</span>
+                                </a>
+
+                                <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
+                                    <i class="material-icons left">star_border</i>
+                                    <span>star</span>
+                                </a>
+
+                            </div>
+                            <div class="col s6 right-align">
+                                <a class="waves-effect waves-light btn" th:onclick="'downloadResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
+                                    <i class="material-icons left">file_download</i>
+                                    <span>download</span>
+                                </a>
+
+                                <a class="waves-effect waves-light btn"><i class="material-icons right">play_arrow</i>analyse</a>
+                            </div>
+
+                        </div>
+                    </li>
+
+                </ul>
             </div>
 
             <div class="row">
@@ -102,12 +166,6 @@
 
     </div>
 </footer>
-
-
-<!--  Scripts-->
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
-<script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
 
 </body>
 </html>

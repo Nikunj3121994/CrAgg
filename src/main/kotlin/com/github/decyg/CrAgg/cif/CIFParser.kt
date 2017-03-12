@@ -21,7 +21,7 @@ import org.parboiled.trees.MutableTreeNodeImpl
 @BuildParseTree
 open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
-    //data class test(val vol : String) : GraphNode<test>
+    //data class toggleResult(val vol : String) : GraphNode<toggleResult>
 
     class CIFNode(val value : String) : MutableTreeNodeImpl<CIFNode>() {
 

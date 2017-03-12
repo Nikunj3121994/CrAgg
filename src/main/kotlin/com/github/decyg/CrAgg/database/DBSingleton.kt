@@ -12,6 +12,10 @@ import kotlin.reflect.KClass
 typealias DBSource = KClass<out DBAbstraction>
 typealias DB_UUID = Pair<DBSource, String>
 
+fun DB_UUID.asReadable() : String {
+    return this.first.simpleName + this.second
+}
+
 object DBSingleton {
 
     /**
@@ -50,6 +54,8 @@ object DBSingleton {
 
     )
 
+    // Util methods
+
     fun getDBBySource(source : DBSource) : DBAbstraction {
         return datasetMap[source]!!
     }
@@ -61,4 +67,9 @@ object DBSingleton {
     fun getMappingForSource(source : DBSource, key : CommonQueryTerm) : String {
         return datasetMap[source]!!.queryMap[key]!!
     }
+
+    fun getDBSourceByName(dbName : String) = datasetMap.keys.find { it.simpleName == dbName }
+
+    fun getDBByName(dbName : String) : DBAbstraction? = datasetMap[getDBSourceByName(dbName)]
+
 }
