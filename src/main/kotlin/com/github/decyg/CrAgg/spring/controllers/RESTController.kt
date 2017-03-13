@@ -23,15 +23,6 @@ class RESTController {
 
     data class ResultSelection(val db : String = "", val id : String = "")
 
-    @RequestMapping(value = "/api/selectResult", method = arrayOf(RequestMethod.PUT))
-    open fun selectResult(@RequestBody source : ResultSelection) : ResponseEntity<Void> {
-
-        println(source)
-
-        return ResponseEntity(HttpStatus.CREATED)
-
-    }
-
     @RequestMapping(value = "/api/starResult", method = arrayOf(RequestMethod.PUT))
     open fun starResult(@RequestBody source : ResultSelection) : ResponseEntity<Void> {
 

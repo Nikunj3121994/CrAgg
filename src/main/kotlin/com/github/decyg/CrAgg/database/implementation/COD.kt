@@ -33,11 +33,13 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
     override fun queryDatabaseSpecific(specificResult: CIFBriefResult): CIFDetailedResult {
 
-        val cifText = URL("http://www.crystallography.net/cod/${specificResult.id}.cif").readText()
+        val cifText = URL("http://www.crystallography.net/cod/${specificResult.id.second}.cif").readText()
 
         return CIFDetailedResult(CIFSingleton.parseCIF(cifText))
 
     }
+
+    data class test(val testmap : Map<CommonQueryTerm, String>)
 
     override fun queryDatabase(query: QueryExpression): List<CIFBriefResult> {
 
@@ -50,27 +52,47 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
         val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT ${Constants.TOTAL_RESULTS}"
 
-        val dataResults = curSession.select(sql) {
+        val dataResults = curSession.select(sql) { row ->
 
-            row -> CIFBriefResult(
-                DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
-                row.stringOrNull(queryMap[CommonQueryTerm.SPACE_GROUP]!!) ?: "N/A",
-                mapOf(
-                        CommonQueryTerm.A_LENGTH to row.double(queryMap[CommonQueryTerm.A_LENGTH]!!),
-                        CommonQueryTerm.B_LENGTH to row.double(queryMap[CommonQueryTerm.B_LENGTH]!!),
-                        CommonQueryTerm.C_LENGTH to row.double(queryMap[CommonQueryTerm.C_LENGTH]!!),
-                        CommonQueryTerm.ALPHA_LENGTH to row.double(queryMap[CommonQueryTerm.ALPHA_LENGTH]!!),
-                        CommonQueryTerm.BETA_LENGTH to row.double(queryMap[CommonQueryTerm.BETA_LENGTH]!!),
-                        CommonQueryTerm.GAMMA_LENGTH to row.double(queryMap[CommonQueryTerm.GAMMA_LENGTH]!!),
-                        CommonQueryTerm.CELL_VOLUME to row.double(queryMap[CommonQueryTerm.CELL_VOLUME]!!)
-                ),
-                row.stringOrNull(queryMap[CommonQueryTerm.CHEM_NAME]!!) ?: "N/A",
-                row.stringOrNull(queryMap[CommonQueryTerm.STRUCT_FORMULA]!!) ?: "N/A",
-                row.stringOrNull(queryMap[CommonQueryTerm.AUTHOR]!!) ?: "N/A",
-                row.stringOrNull(queryMap[CommonQueryTerm.JOURNAL]!!) ?: "N/A"
-                )
+            val outMap : MutableMap<CommonQueryTerm, String> = mutableMapOf()
+
+            CommonQueryTerm.values().forEach {
+                outMap[it] =
+                    when(it.fieldType){
+                        AllowableQueryType.TEXT -> row.stringOrNull(queryMap[it]!!) ?: "N/A"
+                        AllowableQueryType.NUMERICAL -> row.doubleOrNull(queryMap[it]!!).toString() ?: "N/A"
+                        else -> "N/A"
+                    }
+
+            }
+
+            CIFBriefResult(
+                    DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
+                    outMap
+
+            )
 
         }
+
+        /**
+          CIFBriefResult(
+        DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
+        row.stringOrNull(queryMap[CommonQueryTerm.SPACE_GROUP]!!) ?: "N/A",
+        mapOf(
+        CommonQueryTerm.A_LENGTH to row .double(queryMap[CommonQueryTerm.A_LENGTH]!!),
+        CommonQueryTerm.B_LENGTH to row.double(queryMap[CommonQueryTerm.B_LENGTH]!!),
+        CommonQueryTerm.C_LENGTH to row.double(queryMap[CommonQueryTerm.C_LENGTH]!!),
+        CommonQueryTerm.ALPHA_LENGTH to row.double(queryMap[CommonQueryTerm.ALPHA_LENGTH]!!),
+        CommonQueryTerm.BETA_LENGTH to row.double(queryMap[CommonQueryTerm.BETA_LENGTH]!!),
+        CommonQueryTerm.GAMMA_LENGTH to row.double(queryMap[CommonQueryTerm.GAMMA_LENGTH]!!),
+        CommonQueryTerm.CELL_VOLUME to row.double(queryMap[CommonQueryTerm.CELL_VOLUME]!!)
+        ),
+        row.stringOrNull(queryMap[CommonQueryTerm.CHEM_NAME]!!) ?: "N/A",
+        row.stringOrNull(queryMap[CommonQueryTerm.STRUCT_FORMULA]!!) ?: "N/A",
+        row.stringOrNull(queryMap[CommonQueryTerm.AUTHOR]!!) ?: "N/A",
+        row.stringOrNull(queryMap[CommonQueryTerm.JOURNAL]!!) ?: "N/A"
+        )
+         */
 
         return dataResults
 

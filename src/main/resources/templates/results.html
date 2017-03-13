@@ -22,7 +22,7 @@
     <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
         <ul class="right hide-on-med-and-down">
             <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
-            <li><a href="index.html"><i class="material-icons left">perm_identity</i>Sign In</a></li>
+            <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a></li>
         </ul>
     </div>
 </nav>
@@ -44,10 +44,7 @@
         <div th:if="${totalMaxResults > 0}">
             <div class="row">
 
-                <!-- Programatically change to clear all when clicked? -->
-                <a class="waves-effect waves-light btn-large left-align col s2">Select All</a>
-
-                <ul class="pagination right-align col s10">
+                <ul class="pagination center-align col s12">
 
                     <!-- waves-effect for not selected-->
                     <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
@@ -60,7 +57,7 @@
 
             <div class="row">
                 <ul class="collection z-depth-4">
-                    <li th:each="item, iter : ${briefResultModel.briefResults}" class="collection-item" th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'">
+                    <li th:each="item, iter : ${briefResultModel.briefResults}" class="collection-item" th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'" th:with="cqt=${T(com.github.decyg.CrAgg.database.query.CommonQueryTerm)}">
 
                         <!-- add to selection tick  th:onclick="'toggleResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'" -->
                         <div class="row">
@@ -75,31 +72,31 @@
                             <div class="card col s6">
                                 <h6>Compound Name</h6>
                                 <div class="divider"></div>
-                                <p th:text="${item.compoundName}">N/A</p>
+                                <p th:text="${item.resultMap[cqt.CHEM_NAME]}">N/A</p>
                             </div>
                             <div class="card col s6">
                                 <h6>Chemical Formula</h6>
                                 <div class="divider"></div>
-                                <p th:text="${item.chemFormula}">N/A</p>
+                                <p th:text="${item.resultMap[cqt.STRUCT_FORMULA]}">N/A</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="card col s6">
                                 <h6>Journal Title</h6>
                                 <div class="divider"></div>
-                                <p th:text="${item.journalTitle}">N/A</p>
+                                <p th:text="${item.resultMap[cqt.JOURNAL]}">N/A</p>
                             </div>
                             <div class="card col s6">
                                 <h6>Authors</h6>
                                 <div class="divider"></div>
-                                <p th:text="${item.authors}">N/A</p>
+                                <p th:text="${item.resultMap[cqt.AUTHOR]}">N/A</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="card col s6">
                                 <h6>Space Group</h6>
                                 <div class="divider"></div>
-                                <p th:text="${item.spaceGroup}">N/A</p>
+                                <p th:text="${item.resultMap[cqt.SPACE_GROUP]}">N/A</p>
                             </div>
                             <div class="card col s6">
                                 <h6>Unit Cell</h6>
@@ -114,11 +111,7 @@
 
                         <div class="row">
 
-                            <div class="col s6 left-align">
-                                <a class="waves-effect waves-light btn" th:onclick="'toggleResultSelected(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
-                                    <i class="material-icons left">check_box_outline_blank</i>
-                                    <span>select</span>
-                                </a>
+                            <div class="col s5 left-align">
 
                                 <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
                                     <i class="material-icons left">star_border</i>
@@ -126,13 +119,31 @@
                                 </a>
 
                             </div>
-                            <div class="col s6 right-align">
+                            <div class="col s7 right-align">
+                                <a class="waves-effect waves-light btn" href="#detailmodal">
+                                    <i class="material-icons right">list</i>
+                                    <span>more details</span>
+                                </a>
                                 <a class="waves-effect waves-light btn" th:onclick="'downloadResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
-                                    <i class="material-icons left">file_download</i>
+                                    <i class="material-icons right">file_download</i>
                                     <span>download</span>
                                 </a>
 
-                                <a class="waves-effect waves-light btn"><i class="material-icons right">play_arrow</i>analyse</a>
+                                <a class="waves-effect waves-light btn" >
+                                    <i class="material-icons right">play_arrow</i>
+                                    <span>analyse</span>
+                                </a>
+
+                            </div>
+
+                            <div id="detailmodal" class="modal">
+                                <div class="modal-content">
+                                    <h4>Detailed Info</h4>
+                                    <p th:utext="${item.prettyPrintResultMap()}">A bunch of text</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+                                </div>
                             </div>
 
                         </div>
@@ -143,9 +154,15 @@
 
             <div class="row">
 
-                <a class="waves-effect waves-light btn-large left-align col s3">Download Selected</a>
-                <a class="waves-effect waves-light btn-large left-align col s3 offset-s6">Star Selected</a>
+                <ul class="pagination center-align col s12">
 
+                    <!-- waves-effect for not selected-->
+                    <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
+                        <a href="#!" th:href="${'/results?page=' + (i + 1)}" th:text="${i + 1}">1</a>
+                    </li>
+
+
+                </ul>
             </div>
 
         </div>

@@ -1,5 +1,6 @@
 package com.github.decyg.CrAgg.spring.controllers
 
+import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
 import com.github.decyg.CrAgg.utils.Constants
@@ -32,6 +33,8 @@ open class ResultsController {
     ) : String {
 
         val briefResModel = resultModel.toBriefResultsModel()
+
+        val test = DBSingleton.getDBByName("COD")!!.queryDatabaseSpecific(briefResModel.briefResults[0])
 
         pageModel.addAttribute("pageNum", pageNum ?: 1)
         pageModel.addAttribute("totalNumResults", briefResModel.briefResults.size / Constants.RESULTS_PER_PAGE)

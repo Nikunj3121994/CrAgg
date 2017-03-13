@@ -12,20 +12,26 @@ import com.github.decyg.CrAgg.database.query.CommonQueryTerm
  */
 data class CIFBriefResult(
         val id : DB_UUID,
-        val spaceGroup : String, // The space group of a crystal
-        val unitCell : Map<CommonQueryTerm, Double>, // A Map describing the unit cell of something
-        val compoundName : String, // The name of the compound
-        val chemFormula : String, // The formula of the compound
-        val authors : String, // The authors
-        val journalTitle : String // The journal
+        val resultMap : MutableMap<CommonQueryTerm, String>
 ) {
     fun cellAsString() : String {
 
-        return  "a: ${unitCell[CommonQueryTerm.A_LENGTH]} Å " +
-                "b: ${unitCell[CommonQueryTerm.B_LENGTH]} Å " +
-                "c: ${unitCell[CommonQueryTerm.C_LENGTH]} Å " +
-                "α: ${unitCell[CommonQueryTerm.ALPHA_LENGTH]} ° " +
-                "β: ${unitCell[CommonQueryTerm.BETA_LENGTH]} ° " +
-                "γ: ${unitCell[CommonQueryTerm.GAMMA_LENGTH]} ° "
+        return  "a: ${resultMap[CommonQueryTerm.A_LENGTH]} Å " +
+                "b: ${resultMap[CommonQueryTerm.B_LENGTH]} Å " +
+                "c: ${resultMap[CommonQueryTerm.C_LENGTH]} Å " +
+                "α: ${resultMap[CommonQueryTerm.ALPHA_LENGTH]} ° " +
+                "β: ${resultMap[CommonQueryTerm.BETA_LENGTH]} ° " +
+                "γ: ${resultMap[CommonQueryTerm.GAMMA_LENGTH]} ° "
+    }
+
+    fun prettyPrintResultMap() : String {
+
+        var outS : String = ""
+
+        resultMap.forEach { t, u ->
+            outS += "<br>${t.prettyName}: $u"
+        }
+
+        return outS
     }
 }

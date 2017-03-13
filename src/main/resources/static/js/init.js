@@ -1,3 +1,6 @@
+
+// JQuery/Materialize init functions
+
 (function($){
   $(function(){
 
@@ -18,37 +21,17 @@ $(document).ready(function(){
     $('.collapsible').collapsible();
 });
 
-function toggleResultSelected(buttonsource, dbsource, dbid) {
-    $.ajax({
-        url: '/api/selectResult',
-        type: 'PUT',
-        data: JSON.stringify({
-            db: dbsource,
-            id: dbid
-        }),
-        contentType: 'application/json',
-        success: function(result) {
-            // alternate the buttons class here, state should be initially set on page load and checking the
-            // session cache
-            var selectIcon = "check_box";
-            var deselectIcon = "check_box_outline_blank";
+$(document).ready(function(){
+    $('ul.tabs').tabs();
+});
 
-            var selectText = "select";
-            var notSelectedText = "deselect";
+$(document).ready(function(){
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal').modal();
+});
 
-            var btnicon = buttonsource.getElementsByTagName("i")[0].innerHTML;
 
-            if(btnicon == deselectIcon){
-                buttonsource.getElementsByTagName("i")[0].innerHTML = selectIcon;
-                buttonsource.getElementsByTagName("span")[0].innerHTML = notSelectedText;
-            } else {
-                buttonsource.getElementsByTagName("i")[0].innerHTML = deselectIcon;
-                buttonsource.getElementsByTagName("span")[0].innerHTML = selectText;
-            }
-
-        }
-    });
-}
+// Utility functions for interfacing with the rest api
 
 function toggleResultStarred(buttonsource, dbsource, dbid) {
     $.ajax({

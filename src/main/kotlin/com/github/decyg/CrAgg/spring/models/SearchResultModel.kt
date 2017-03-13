@@ -14,6 +14,7 @@ data class SearchResultModel(
         var termMap: Map<CommonQueryTerm, String> = mutableMapOf(),
         var quantifierMap : Map<CommonQueryTerm, QueryQuantifier> = mutableMapOf()
 ) {
+
     fun toBriefResultsModel(page : Int = 1): BriefResultsModel {
         // First generate the query expression object from the input enums
         // Right now this is pretty basic and just chains ANDS but it has enough
