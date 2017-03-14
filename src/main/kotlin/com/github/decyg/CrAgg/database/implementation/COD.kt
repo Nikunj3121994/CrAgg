@@ -5,8 +5,8 @@ import com.github.andrewoma.kwery.core.dialect.MysqlDialect
 import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBAbstraction
-import com.github.decyg.CrAgg.database.DB_UUID
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.utils.Constants
 import java.io.InputStream
@@ -21,25 +21,19 @@ import java.util.*
 class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
 
-    override fun getStreamForID(cifID: DB_UUID): InputStream {
+    override fun getStreamForID(cifID: CIF_ID): InputStream {
 
-        val cifFile = URL("http://www.crystallography.net/cod/${cifID.second}.cif").readText()
-
-        println(cifFile)
-
-        return cifFile.byteInputStream()
+        return URL("http://www.crystallography.net/cod/${cifID.id}.cif").openStream()
 
     }
 
     override fun queryDatabaseSpecific(specificResult: CIFBriefResult): CIFDetailedResult {
 
-        val cifText = URL("http://www.crystallography.net/cod/${specificResult.id.second}.cif").readText()
+        val cifText = URL("http://www.crystallography.net/cod/${specificResult.cif_ID.id}.cif").readText()
 
         return CIFDetailedResult(CIFSingleton.parseCIF(cifText))
 
     }
-
-    data class test(val testmap : Map<CommonQueryTerm, String>)
 
     override fun queryDatabase(query: QueryExpression): List<CIFBriefResult> {
 
@@ -67,32 +61,12 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
             }
 
             CIFBriefResult(
-                    DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
+                    CIF_ID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
                     outMap
 
             )
 
         }
-
-        /**
-          CIFBriefResult(
-        DB_UUID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
-        row.stringOrNull(queryMap[CommonQueryTerm.SPACE_GROUP]!!) ?: "N/A",
-        mapOf(
-        CommonQueryTerm.A_LENGTH to row .double(queryMap[CommonQueryTerm.A_LENGTH]!!),
-        CommonQueryTerm.B_LENGTH to row.double(queryMap[CommonQueryTerm.B_LENGTH]!!),
-        CommonQueryTerm.C_LENGTH to row.double(queryMap[CommonQueryTerm.C_LENGTH]!!),
-        CommonQueryTerm.ALPHA_LENGTH to row.double(queryMap[CommonQueryTerm.ALPHA_LENGTH]!!),
-        CommonQueryTerm.BETA_LENGTH to row.double(queryMap[CommonQueryTerm.BETA_LENGTH]!!),
-        CommonQueryTerm.GAMMA_LENGTH to row.double(queryMap[CommonQueryTerm.GAMMA_LENGTH]!!),
-        CommonQueryTerm.CELL_VOLUME to row.double(queryMap[CommonQueryTerm.CELL_VOLUME]!!)
-        ),
-        row.stringOrNull(queryMap[CommonQueryTerm.CHEM_NAME]!!) ?: "N/A",
-        row.stringOrNull(queryMap[CommonQueryTerm.STRUCT_FORMULA]!!) ?: "N/A",
-        row.stringOrNull(queryMap[CommonQueryTerm.AUTHOR]!!) ?: "N/A",
-        row.stringOrNull(queryMap[CommonQueryTerm.JOURNAL]!!) ?: "N/A"
-        )
-         */
 
         return dataResults
 

@@ -33,7 +33,7 @@ $(document).ready(function(){
 
 // Utility functions for interfacing with the rest api
 
-function toggleResultStarred(buttonsource, dbsource, dbid) {
+function starResult(dbsource, dbid) {
     $.ajax({
         url: '/api/starResult',
         type: 'PUT',
@@ -41,28 +41,47 @@ function toggleResultStarred(buttonsource, dbsource, dbid) {
             db: dbsource,
             id: dbid
         }),
-        contentType: 'application/json',
-        success: function(result) {
-            // alternate the buttons class here, state should be initially set on page load and checking the
-            // session cache
-            var starIcon = "star";
-            var destarIcon = "star_border";
-
-            var starText = "star";
-            var notStarredText = "unstar";
-
-            var btnicon = buttonsource.getElementsByTagName("i")[0].innerHTML;
-
-            if(btnicon == destarIcon){
-                buttonsource.getElementsByTagName("i")[0].innerHTML = starIcon;
-                buttonsource.getElementsByTagName("span")[0].innerHTML = notStarredText;
-            } else {
-                buttonsource.getElementsByTagName("i")[0].innerHTML = destarIcon;
-                buttonsource.getElementsByTagName("span")[0].innerHTML = starText;
-            }
-
-        }
+        contentType: 'application/json'
     });
+}
+
+function unstarResult(dbsource, dbid) {
+    $.ajax({
+        url: '/api/unStarResult',
+        type: 'PUT',
+        data: JSON.stringify({
+            db: dbsource,
+            id: dbid
+        }),
+        contentType: 'application/json'
+    });
+}
+
+function toggleResultStarred(buttonsource, dbsource, dbid) {
+
+    var starIcon = "star";
+    var destarIcon = "star_border";
+
+    var starText = "star";
+    var notStarredText = "unstar";
+
+    var btnicon = buttonsource.getElementsByTagName("i")[0].innerHTML;
+
+
+    if(btnicon == destarIcon){
+
+        starResult(dbsource, dbid);
+
+        buttonsource.getElementsByTagName("i")[0].innerHTML = starIcon;
+        buttonsource.getElementsByTagName("span")[0].innerHTML = notStarredText;
+    } else {
+
+        unstarResult(dbsource, dbid);
+
+        buttonsource.getElementsByTagName("i")[0].innerHTML = destarIcon;
+        buttonsource.getElementsByTagName("span")[0].innerHTML = starText;
+    }
+
 }
 
 function downloadResult(buttonsource, dbsource, dbid) {

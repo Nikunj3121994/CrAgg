@@ -2,7 +2,7 @@ package com.github.decyg.CrAgg.database.query
 
 /**
  * This is an enum intended to encapsulate the possible common queries made
- * These are such things as id (specific to source), space group, author, compound name and cell
+ * These are such things as cif_ID (specific to source), space group, author, compound name and cell
  *
  * The fields used here were heavily inspired by the ICSD's fields, i'm not very knowledgable about chemistry so some
  * of these fields may end up not even being implemented

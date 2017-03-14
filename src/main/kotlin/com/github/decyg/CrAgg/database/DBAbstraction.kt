@@ -2,6 +2,7 @@ package com.github.decyg.CrAgg.database
 
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import java.io.InputStream
@@ -32,6 +33,6 @@ interface DBAbstraction {
     /**
      * Takes in an OutputStream and the ID of the entry and streams the file to it, wherever it comes from
      */
-    fun getStreamForID(cifID : DB_UUID) : InputStream
+    fun getStreamForID(cifID : CIF_ID) : InputStream
 
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Crystal Aggregator</title>
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
+    <script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
+    <script type="text/javascript" src="../static/js/jsmol/JSmol.min.js" th:src="@{/js/jsmol/JSmol.min.js}"></script>
+
+</head>
+
+<body>
+
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
+            <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<!--/*@thymesVar id="constants" type="com.github.decyg.CrAgg.utils.Constants"*/-->
+<!--/*@thymesVar id="totalMaxResults" type="java.lang.Integer"*/-->
+<!--/*@thymesVar id="starredModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
+<main>
+        <div class="container">
+
+            <br>
+
+            <div class="card-panel light-blue lighten-1">
+                <span class="white-text">
+                    This is the analyser page, use it to see detailed information about a selected element as well as compare details.
+                </span>
+            </div>
+
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <select required>
+                        <option value="" disabled selected>Choose a starred element to focus on</option>
+                        <option th:each="db, it : ${starredModel.briefResults}" th:value="${db.getCif_ID}" th:text="${db.getCif_ID.first.simpleName + ':' + db.getCif_ID.second}"></option>
+                    </select>
+                    <label>Element Selector</label>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row">
+                <div class="container col s6">
+                    <script type="text/javascript">
+                        var Info = {
+                            width: 400,
+                            height: 400,
+                            color: "0x000000",
+                            use: "HTML5",
+                            j2sPath: "/js/jsmol/j2s",
+                            script: "load 1517271.cif {1,1,1}; hide symmetry",
+                            disableInitialConsole: true,
+                            allowJavaScript: true,
+                            console: "none"
+                        };
+                        var jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+                    </script>
+                </div>
+                <div class="col s6">
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+</main>
+
+
+<footer class="page-footer white-text green lighten-1">
+    <div class="container">
+
+        Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
+        Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
+        Cussen</a> for all the help and advice.
+        <br>
+
+    </div>
+</footer>
+
+</body>
+</html>

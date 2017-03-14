@@ -32,6 +32,7 @@
 <!--/*@thymesVar id="totalMaxResults" type="java.lang.Integer"*/-->
 <!--/*@thymesVar id="pageNum" type="java.lang.Integer"*/-->
 <!--/*@thymesVar id="briefResultModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
+<!--/*@thymesVar id="starredModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
 <main>
     <div class="container">
 
@@ -59,10 +60,10 @@
                 <ul class="collection z-depth-4">
                     <li th:each="item, iter : ${briefResultModel.briefResults}" class="collection-item" th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'" th:with="cqt=${T(com.github.decyg.CrAgg.database.query.CommonQueryTerm)}">
 
-                        <!-- add to selection tick  th:onclick="'toggleResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'" -->
+                        <!-- add to selection tick  th:onclick="'toggleResult(this, \'' + ${item.cif_ID.first.getSimpleName()} + '\',\'' + ${item.cif_ID.second} + '\');'" -->
                         <div class="row">
 
-                            <h5 class="col s12 center-align" th:text="${item.id.first.simpleName + ' : ' + item.id.second}">Header</h5>
+                            <h5 class="col s12 center-align" th:text="${item.cif_ID.toString()}">Header</h5>
 
                         </div>
 
@@ -113,9 +114,9 @@
 
                             <div class="col s5 left-align">
 
-                                <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
-                                    <i class="material-icons left">star_border</i>
-                                    <span>star</span>
+                                <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
+                                    <i th:text="${starredModel.briefResults.contains(item) ? 'star' : 'star_border'}" class="material-icons left" >star_border</i>
+                                    <span th:text="${starredModel.briefResults.contains(item) ? 'unstar' : 'star'}">star</span>
                                 </a>
 
                             </div>
@@ -124,12 +125,12 @@
                                     <i class="material-icons right">list</i>
                                     <span>more details</span>
                                 </a>
-                                <a class="waves-effect waves-light btn" th:onclick="'downloadResult(this, \'' + ${item.id.first.getSimpleName()} + '\',\'' + ${item.id.second} + '\');'">
+                                <a class="waves-effect waves-light btn" th:onclick="'downloadResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
                                     <i class="material-icons right">file_download</i>
                                     <span>download</span>
                                 </a>
 
-                                <a class="waves-effect waves-light btn" >
+                                <a class="waves-effect waves-light btn" th:onclick="'starResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'" th:href="@{/analyse}">
                                     <i class="material-icons right">play_arrow</i>
                                     <span>analyse</span>
                                 </a>

@@ -1,6 +1,5 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
 import com.github.decyg.CrAgg.utils.Constants
@@ -34,12 +33,11 @@ open class ResultsController {
 
         val briefResModel = resultModel.toBriefResultsModel()
 
-        val test = DBSingleton.getDBByName("COD")!!.queryDatabaseSpecific(briefResModel.briefResults[0])
-
         pageModel.addAttribute("pageNum", pageNum ?: 1)
         pageModel.addAttribute("totalNumResults", briefResModel.briefResults.size / Constants.RESULTS_PER_PAGE)
         pageModel.addAttribute("totalMaxResults", briefResModel.briefResults.size)
         pageModel.addAttribute("briefResultModel", briefResModel.paginate())
+        pageModel.addAttribute("starredModel", StarredController.getStarredResults(session))
 
         session.setAttribute("briefResultModel", briefResModel)
         session.setAttribute("resultList", resultModel)
@@ -69,6 +67,8 @@ open class ResultsController {
         pageModel.addAttribute("totalNumResults", resModel.briefResults.size / Constants.RESULTS_PER_PAGE)
         pageModel.addAttribute("totalMaxResults", resModel.briefResults.size)
         pageModel.addAttribute("briefResultModel", resModel.paginate(limitedPage))
+        pageModel.addAttribute("starredModel", StarredController.getStarredResults(session))
+
 
         return "results"
     }

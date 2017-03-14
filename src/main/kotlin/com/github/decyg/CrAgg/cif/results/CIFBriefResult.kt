@@ -1,6 +1,7 @@
 package com.github.decyg.CrAgg.cif.results
 
-import com.github.decyg.CrAgg.database.DB_UUID
+import com.github.decyg.CrAgg.database.DBSingleton
+import com.github.decyg.CrAgg.database.DBSource
 import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 
 /**
@@ -11,7 +12,7 @@ import com.github.decyg.CrAgg.database.query.CommonQueryTerm
  * Created by declan on 27/02/2017.
  */
 data class CIFBriefResult(
-        val id : DB_UUID,
+        val cif_ID: CIF_ID,
         val resultMap : MutableMap<CommonQueryTerm, String>
 ) {
     fun cellAsString() : String {
@@ -33,5 +34,16 @@ data class CIFBriefResult(
         }
 
         return outS
+    }
+}
+
+data class CIF_ID(val db : DBSource, val id : String){
+    constructor(db : String, id : String) : this(
+            DBSingleton.getDBSourceByName(db)!!,
+            id
+    )
+
+    override fun toString(): String {
+        return "${db.simpleName} : $id"
     }
 }
