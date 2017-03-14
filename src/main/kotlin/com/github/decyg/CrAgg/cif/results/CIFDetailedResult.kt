@@ -1,8 +1,6 @@
 package com.github.decyg.CrAgg.cif.results
 
 import com.github.decyg.CrAgg.cif.CIFParser
-import com.github.decyg.CrAgg.cif.CIFSingleton
-import java.io.File
 
 /**
  * This is a layer on top of the CIFNode type to hide the raw map from the users, this object represents it in a
@@ -11,7 +9,7 @@ import java.io.File
  * Takes in a File, turns it into a CIFNode, traverses it and populates its' root CIF_Node value
  * Created by declan on 27/02/2017.
  */
-class CIFDetailedResult(cifNode : CIFParser.CIFNode) {
+class CIFDetailedResult(val cifNode : CIFParser.CIFNode) {
 
     // In the abstraction i want to seperate the level of a regular top level dataitem on a datablock
     // from a looped data item, this is because a looped data item is essentially a table and representing this

@@ -30,7 +30,6 @@ $(document).ready(function(){
     $('.modal').modal();
 });
 
-
 // Utility functions for interfacing with the rest api
 
 function starResult(dbsource, dbid) {

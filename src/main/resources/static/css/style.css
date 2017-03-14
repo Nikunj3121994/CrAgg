@@ -24,3 +24,29 @@ body {
 main {
     flex: 1 0 auto;
 }
+
+/**
+Thank you very much Ryan Shripat for the below code http://stackoverflow.com/questions/11163694/setting-line-height-on-a-jstree
+ */
+
+.jstree-default table {
+    white-space:normal !important; height: auto;
+}
+.jstree-anchor {
+    height: auto !important;
+}
+.jstree-default li > ins {
+    vertical-align:top;
+}
+.jstree-leaf {
+    height: auto;
+}
+.jstree-leaf table {
+    height: auto !important;
+    overflow: scroll;
+}
+
+#jstree_detailed_cif {
+    overflow: scroll;
+    height: 500px;
+}

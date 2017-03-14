@@ -17,6 +17,7 @@ object CIFSessionHandler {
         if(!cacheFolder.exists())
             cacheFolder.mkdir()
 
+
     }
 
     private fun idAsFile(cif_ID: CIF_ID) = File(cacheFolder, "${cif_ID.db.simpleName}-${cif_ID.id}.cif")

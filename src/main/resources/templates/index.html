@@ -19,16 +19,7 @@
 
 <body>
 
-<nav class="light-blue lighten-1" role="navigation">
-    <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
-            <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a></li>
-        </ul>
-    </div>
-</nav>
-
-
+<div th:insert="~{elements :: topbar}"></div>
 
 <main>
         <div class="container">
@@ -128,16 +119,7 @@
 </main>
 
 
-<footer class="page-footer white-text green lighten-1">
-    <div class="container">
-
-        Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
-        Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
-        Cussen</a> for all the help and advice.
-        <br>
-
-    </div>
-</footer>
+<div th:insert="~{elements :: bottombar}"></div>
 
 
 </body>

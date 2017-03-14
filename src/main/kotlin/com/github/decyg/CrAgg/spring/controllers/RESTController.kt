@@ -1,11 +1,10 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
-import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.spring.models.BriefResultsModel
-import org.apache.commons.io.IOUtils
+import com.github.decyg.CrAgg.spring.session.CIFSessionHandler
+import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Service
@@ -23,89 +22,58 @@ import javax.servlet.http.HttpSession
 @Service
 class RESTController {
 
+    data class CIF_Result(val db : String, val id : String){
+        fun toID() : CIF_ID {
+            return CIF_ID(db, id)
+        }
+    }
 
     @RequestMapping(value = "/api/starResult", method = arrayOf(RequestMethod.PUT))
     open fun starResult(
-            @RequestBody source : CIF_ID,
+            @RequestBody source : CIF_Result,
             session : HttpSession
     ) : ResponseEntity<Void> {
 
-        println(session.getAttribute("briefResultModel"))
-
-        if(session.getAttribute("briefResultModel") != null){
-
-            val briefResModel = session.getAttribute("briefResultModel") as BriefResultsModel
-
-            val res = briefResModel.briefResults.find { it.cif_ID == source }
-
-            if (session.getAttribute("starredResults") == null)
-                session.setAttribute("starredResults", mutableListOf<CIFBriefResult>())
-
-            val starredResults = session.getAttribute("starredResults") as MutableList<CIFBriefResult>
-
-            if (res != null && !starredResults.contains(res)) {
-                starredResults.add(res)
-            }
-
-            session.setAttribute("starredResults", starredResults)
+        if(StarredController.addStarredResult(source.toID(), session)){
+            return ResponseEntity(HttpStatus.CREATED)
+        } else {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
         }
-
-        println(session.getAttribute("starredResults"))
-
-        return ResponseEntity(HttpStatus.CREATED)
 
     }
 
     @RequestMapping(value = "/api/unStarResult", method = arrayOf(RequestMethod.PUT))
     open fun unStarResult(
-            @RequestBody source : CIF_ID,
+            @RequestBody source : CIF_Result,
             session : HttpSession
     ) : ResponseEntity<Void> {
 
-        println(session.getAttribute("briefResultModel"))
-
-        if(session.getAttribute("briefResultModel") != null){
-
-            val briefResModel = session.getAttribute("briefResultModel") as BriefResultsModel
-
-            val res = briefResModel.briefResults.find { it.cif_ID == source }
-
-            if (session.getAttribute("starredResults") == null)
-                session.setAttribute("starredResults", mutableListOf<CIFBriefResult>())
-
-            val starredResults = session.getAttribute("starredResults") as MutableList<CIFBriefResult>
-
-            if (res != null && starredResults.contains(res)) {
-                starredResults.remove(res)
-            }
-
-            session.setAttribute("starredResults", starredResults)
+        if(StarredController.removeStarredResult(source.toID(), session)){
+            return ResponseEntity(HttpStatus.CREATED)
+        } else {
+            return ResponseEntity(HttpStatus.NOT_FOUND)
         }
-
-        println(session.getAttribute("starredResults"))
-
-        return ResponseEntity(HttpStatus.CREATED)
 
     }
 
-    @RequestMapping(value = "/api/downloadResult/{dbsource}/{dbid}", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = "/api/downloadResult/{dbsource}/{dbid}", method = arrayOf(RequestMethod.GET), produces = arrayOf("txt/plain"))
     open fun downloadResult(
             resp : HttpServletResponse,
             @PathVariable dbsource : String,
-            @PathVariable dbid : String
-    ) : ResponseEntity<Array<Byte>> {
+            @PathVariable dbid : String,
+            session : HttpSession
+    ) : ResponseEntity<InputStreamResource> {
 
-        val dbSourceObj = DBSingleton.getDBSourceByName(dbsource)!!
-        val dbAbs = DBSingleton.getDBByName(dbsource)!!
+        val cif_ID = CIF_ID(dbsource, dbid)
 
-        resp.contentType = "txt/plain"
-        resp.addHeader("Content-Disposition", "attachment; filename=$dbid.cif")
+        val cifFile = CIFSessionHandler.getCIFFromCacheAsFile(cif_ID) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
-        IOUtils.copy(dbAbs.getStreamForID(CIF_ID(dbSourceObj, dbid)), resp.outputStream)
-
-        resp.flushBuffer()
-
-        return ResponseEntity(HttpStatus.OK)
+        return ResponseEntity
+                .ok()
+                .header("Content-disposition", "attachment;filename=${cifFile.name}")
+                .contentLength(cifFile.length())
+                .contentType(MediaType.parseMediaType("txt/plain"))
+                .body(InputStreamResource(cifFile.inputStream()))
 
     }
 

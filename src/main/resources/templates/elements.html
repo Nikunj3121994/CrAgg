@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+
+<!--/*@thymesVar id="item" type="com.github.decyg.CrAgg.cif.results.CIFBriefResult"*/-->
+<!--/*@thymesVar id="constants" type="com.github.decyg.CrAgg.utils.Constants"*/-->
+<!--/*@thymesVar id="starredModel" type="com.github.decyg.CrAgg.spring.models.BriefResultsModel"*/-->
+<!--/*@thymesVar id="totalNumResults" type="java.lang.Integer"*/-->
+<!--/*@thymesVar id="pageNum" type="java.lang.Integer"*/-->
+<body>
+
+<div th:fragment="topbar">
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
+                <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div th:fragment="bottombar">
+    <footer class="page-footer white-text green lighten-1">
+        <div class="container">
+
+            Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
+            Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
+            Cussen</a> for all the help and advice.
+            <br>
+
+        </div>
+    </footer>
+</div>
+
+<div th:fragment="paginator (pageNum, totalNumResults)">
+    <ul class="pagination center-align col s12">
+
+        <!-- waves-effect for not selected-->
+        <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
+            <a href="#!" th:href="${'/results?page=' + (i + 1)}" th:text="${i + 1}">1</a>
+        </li>
+
+    </ul>
+</div>
+
+
+<div th:fragment="briefresult (item, starredModel)" th:with="cqt=${T(com.github.decyg.CrAgg.database.query.CommonQueryTerm)}">
+
+
+    <div class="row">
+
+        <h5 class="col s12 center-align" th:text="${item.cif_ID.toString()}">Header</h5>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+        <div class="card col s6">
+            <h6>Compound Name</h6>
+            <div class="divider"></div>
+            <p th:text="${item.resultMap[cqt.CHEM_NAME]}">N/A</p>
+        </div>
+        <div class="card col s6">
+            <h6>Chemical Formula</h6>
+            <div class="divider"></div>
+            <p th:text="${item.resultMap[cqt.STRUCT_FORMULA]}">N/A</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card col s6">
+            <h6>Journal Title</h6>
+            <div class="divider"></div>
+            <p th:text="${item.resultMap[cqt.JOURNAL]}">N/A</p>
+        </div>
+        <div class="card col s6">
+            <h6>Authors</h6>
+            <div class="divider"></div>
+            <p th:text="${item.resultMap[cqt.AUTHOR]}">N/A</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card col s6">
+            <h6>Space Group</h6>
+            <div class="divider"></div>
+            <p th:text="${item.resultMap[cqt.SPACE_GROUP]}">N/A</p>
+        </div>
+        <div class="card col s6">
+            <h6>Unit Cell</h6>
+            <div class="divider"></div>
+            <p th:text="${item.cellAsString()}">N/A</p>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <br>
+
+    <div class="row">
+
+        <div class="col s5 left-align">
+
+            <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
+
+                <i th:text="${starredModel.briefResults.contains(item) ? 'star' : 'star_border'}" class="material-icons left" >star_border</i>
+                <span th:text="${starredModel.briefResults.contains(item) ? 'unstar' : 'star'}">star</span>
+            </a>
+
+        </div>
+
+        <div class="col s7 right-align">
+
+            <a class="waves-effect waves-light btn" href="#detailmodal">
+                <i class="material-icons right">list</i>
+                <span>more details</span>
+            </a>
+            <a class="waves-effect waves-light btn" th:href="@{'/api/downloadResult/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+                <i class="material-icons right">file_download</i>
+                <span>download</span>
+            </a>
+
+            <a class="waves-effect waves-light btn" th:onclick="'starResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'" th:href="@{'/analyse/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+                <i class="material-icons right">play_arrow</i>
+                <span>analyse</span>
+            </a>
+
+        </div>
+
+        <div id="detailmodal" class="modal">
+            <div class="modal-content">
+                <h4>Detailed Info</h4>
+                <p th:utext="${item.prettyPrintResultMap()}">A bunch of text</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
