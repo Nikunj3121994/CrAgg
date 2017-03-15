@@ -1,7 +1,7 @@
 package com.github.decyg.CrAgg.utils
 
 /**
- * Created by declan on 09/03/2017.
+ * Basic constants singleton for use with the Spring controllers mainly.
  */
 object Constants {
 

@@ -1,30 +1,36 @@
 package com.github.decyg.CrAgg.database.query
 
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
+
 /**
  *
- * This class is designed to act as a wrapper for a Query Expression simply put.
+ * This class is designed to act as a wrapper for a Query Expression.
  * It acts as a common interface and provides the children to form the structure
  * a QueryExpression object could be represented as so
  * QueryExpression(
  *     AND(
- *         CommonQueryTerm()
- *         CommonQueryTerm()
- *         CommonQueryTerm()
+ *         TERM()
+ *         TERM()
+ *         TERM()
  *     )
  * )
  *
- * QueryExpression encapsualtes a Statement, a Statement can either be AND, OR, NOT or CommonQueryTerm
- * AND takes any number of Statements and would evaluate true if all are satisfied
- * OR takes any number of Statements and would evaluate true if any are satisfied
- * NOT takes one Statements and returns the inverse of the statement
+ * [QueryExpression] encapsualtes an [Expression], an [Expression] can either be [AND], [OR], [NOT] or [TERM]
+ * [AND] takes two [Expression]s and would evaluate true if all are satisfied
+ * [OR] takes two [Expression]s and would evaluate true if any are satisfied
+ * [NOT] takes one [Expression] and returns the inverse of the result
  *
- * Created by declan on 03/03/2017.
+ *
  */
 
 
-/**
- * The top level Expression interface that defines the inheritance behaviour
+/*
+The below objects are fairly self explanatory given the spiel above, they represent a pretty basic logic expression
+to encapsualte terms and allow for an abstract translation of an Expression object to the resulting query language
+or logic
  */
+
 interface Expression
 
 data class QueryExpression(val expression : Expression) : Expression

@@ -1,16 +1,15 @@
 package com.github.decyg.CrAgg.database
 
 import com.github.decyg.CrAgg.database.implementation.COD
-import com.github.decyg.CrAgg.database.query.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import kotlin.reflect.KClass
 
+
+
 /**
- * Central class to handle dispatching and managing of various implementations
- * Created by declan on 27/02/2017.
+ * In a way this is the central class for the backend as it handles the majority of the interfacing between all the
+ * database objects and the rest of the program.
  */
-
-typealias DBSource = KClass<out DBAbstraction>
-
 object DBSingleton {
 
     /**
@@ -49,22 +48,25 @@ object DBSingleton {
 
     )
 
-    // Util methods
+    // Util methods for accessability
 
-    fun getDBBySource(source : DBSource) : DBAbstraction {
-        return datasetMap[source]!!
-    }
+    /**
+     * Get a [DBAbstraction] by the [DBSource]
+     *
+     * @param source the db source
+     * @return the [DBAbstraction] found by that source
+     */
+    fun getDBBySource(source : DBSource) : DBAbstraction = datasetMap[source]!!
 
-    fun getMapForSource(source : DBSource): Map<CommonQueryTerm, String> {
-        return datasetMap[source]!!.queryMap
-    }
-
-    fun getMappingForSource(source : DBSource, key : CommonQueryTerm) : String {
-        return datasetMap[source]!!.queryMap[key]!!
-    }
-
+    /**
+     * Gets a [DBSource] object based off of the name of the implementation class
+     *
+     * @param dbName the name of the class to look for
+     * @return the [DBSource] object by that name
+     */
     fun getDBSourceByName(dbName : String) : DBSource? = datasetMap.keys.find { it.simpleName == dbName }
 
-    fun getDBByName(dbName : String) : DBAbstraction? = datasetMap[getDBSourceByName(dbName)]
 
 }
+
+typealias DBSource = KClass<out DBAbstraction>

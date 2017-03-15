@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.database.query
+package com.github.decyg.CrAgg.database.query.enums
 
 /**
  * This is an enum intended to encapsulate the possible common queries made
@@ -7,7 +7,14 @@ package com.github.decyg.CrAgg.database.query
  * The fields used here were heavily inspired by the ICSD's fields, i'm not very knowledgable about chemistry so some
  * of these fields may end up not even being implemented
  *
- * Created by declan on 01/03/2017.
+ * More fields can be added here and as long as they have a valid mapping in the [DBSingleton] from the query term to
+ * a string in the resultant database, they're supported automatically.
+ *
+ *
+ * @property cifID the id found in the CIF file
+ * @property prettyName the user presentable name
+ * @property example an example for what the field could be
+ * @property fieldType what type the field should accept
  */
 enum class CommonQueryTerm(val cifID: String, val prettyName: String, val example: String, val fieldType: AllowableQueryType) {
 

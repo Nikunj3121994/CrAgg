@@ -1,7 +1,10 @@
-package com.github.decyg.CrAgg.database.query
+package com.github.decyg.CrAgg.database.query.enums
 
 /**
- * This is a helper class to encapsulate comparable data without having to use classes
+ * This is a helper class to encapsulate comparable data without having to use classes.
+ * Takes in a [List] of [QueryQuantifier] objects that define how a field can be quantified
+ *
+ * @property allowedQuantifiers a [List] of [QueryQuantifier]
  */
 enum class AllowableQueryType(val allowedQuantifiers : List<QueryQuantifier>) {
 
@@ -30,6 +33,13 @@ enum class AllowableQueryType(val allowedQuantifiers : List<QueryQuantifier>) {
 
     var presetChoices : Map<String, String> = emptyMap()
 
+    /**
+     * Allows info to actually be stored within an instance of an [AllowableQueryType] object to represent
+     * multiple choices
+     *
+     * @param pChoices a map of choices
+     * @return this
+     */
     fun withChoices(pChoices : Map<String, String>): AllowableQueryType {
         presetChoices = pChoices
 

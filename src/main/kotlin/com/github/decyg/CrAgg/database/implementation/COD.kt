@@ -8,6 +8,9 @@ import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBAbstraction
 import com.github.decyg.CrAgg.database.query.*
+import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.utils.Constants
 import java.io.InputStream
 import java.net.URL
@@ -72,6 +75,12 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
     }
 
+    /**
+     * This is a function to convert the generic [Expression] object into a specific SQL representation
+     *
+     * @param query the [Expression] object to parse
+     * @return a SQL [String]
+     */
     fun queryExpressionToSQL(query : Expression) : String {
 
         when(query) {

@@ -3,35 +3,46 @@ package com.github.decyg.CrAgg.database
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
-import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import java.io.InputStream
 
 /**
- * This is an abstraction of the database access process, there's two main methods.
- * QueryDataBase and QueryDatabaseSpecific
- *
- * The DBAbstraction is typed to the specific implementation of itself to allow for typed returns
- * Created by declan on 16/02/2017.
+ * This is an abstraction of a datasource implementation, it's intentionally left vague/brief to allow for a variety of
+ * data sources and implementations to be used, for example this could easily be adapted to support any type of SQL
+ * like database for an implementation and it could even work with a RESTful API.
  */
 interface DBAbstraction {
 
+    /**
+     * A map accessable from the implementation that maps [CommonQueryTerm] objects to their fields in whatever
+     * format the datasource is in, eg with SQL it maps [CommonQueryTerm] to [String] field headers
+     */
     val queryMap : Map<CommonQueryTerm, String>
 
     /**
-     * Should take in a list of query wrappers, form them into a query of the relevant format and then
-     * return a list of wrapped CIFResults formed from the result set
+     * Takes in a list of [QueryExpression] objects which encapsulate a "term" and queries the data source in the source specific
+     * way, it returns a list of [CIFBriefResult] objects
+     *
+     * @param query the query object
+     * @return a [List] of [CIFBriefResult] object
      */
     fun queryDatabase(query : QueryExpression) : List<CIFBriefResult>
 
     /**
-     * Takes in a single CIFBriefResult selected from the queryDatabase function above, then returns a parsed CIF_Node file in
-     * the format of a CIFNode tree
+     * Takes in a single [CIFBriefResult] object which represents a previous result and returns a [CIFDetailedResult]
+     * object which is a direct abstracted mapping of the CIF object this result represents
+     *
+     * @param specificResult the result to use for the specific query
+     * @return a [CIFDetailedResult] object representing the more detailed version of the brief result
      */
     fun queryDatabaseSpecific(specificResult : CIFBriefResult) : CIFDetailedResult
 
     /**
-     * Takes in an OutputStream and the ID of the entry and streams the file to it, wherever it comes from
+     * Takes in the [CIF_ID] of the entry and streams the CIF file to it, wherever it comes from
+     *
+     * @param cifID the ID of the CIF entry to query
+     * @return an [InputStream] to be used however of the CIF file
      */
     fun getStreamForID(cifID : CIF_ID) : InputStream
 

@@ -1,5 +1,13 @@
-package com.github.decyg.CrAgg.database.query
+package com.github.decyg.CrAgg.database.query.enums
 
+/**
+ * Represents the category of a term object, this is mainly used for organisation and displaying on whatever the frontend
+ * is
+ *
+ * @property prettyName the user readable category name
+ * @property prettyDescription the user readable category description
+ * @property catItems a [Set] of [CommonQueryTerm] objects, defining what this can store
+ */
 enum class TermCategory(val prettyName: String, val prettyDescription: String, val catItems : Set<CommonQueryTerm>) {
 
     BIBLIOGRAPHY(
@@ -31,7 +39,7 @@ enum class TermCategory(val prettyName: String, val prettyDescription: String, v
 
     CHEMISTRY(
             "Chemistry",
-            "chemistry things",
+            "Chemistry things",
             sortedSetOf(
                     CommonQueryTerm.STRUCT_FORMULA,
                     CommonQueryTerm.CHEM_NAME,
@@ -44,7 +52,7 @@ enum class TermCategory(val prettyName: String, val prettyDescription: String, v
             "Symmetry",
             "Symmetrical aspects",
             sortedSetOf(
-                CommonQueryTerm.SPACE_GROUP
+                    CommonQueryTerm.SPACE_GROUP
             )
     ),
 

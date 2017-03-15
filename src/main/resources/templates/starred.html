@@ -7,8 +7,10 @@
 
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
 </head>
 
 <body>
@@ -42,7 +44,8 @@
 
             <div class="row">
                 <ul class="collection z-depth-4">
-                    <li th:each="item, iter : ${starredModel.briefResults}" class="collection-item" th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'">
+                    <li th:each="item, iter : ${starredModel.briefResults}" class="collection-item"
+                        th:classappend="${iter.odd} ? 'grey lighten-3' : 'grey lighten-5'">
 
                         <div th:replace="elements :: briefresult(${item}, ${starredModel})"></div>
 

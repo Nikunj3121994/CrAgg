@@ -6,7 +6,7 @@ import com.github.decyg.CrAgg.utils.Constants
 import java.io.File
 
 /**
- * Created by declan on 13/03/2017.
+ * Singleton that handles the majority of the in-session data storage and cache handling of CIF files on disk
  */
 object CIFSessionHandler {
 
@@ -17,11 +17,25 @@ object CIFSessionHandler {
         if(!cacheFolder.exists())
             cacheFolder.mkdir()
 
-
     }
 
+    // Internal
+
+    /**
+     * Wrapper to convert a cif id into a File path
+     *
+     * @param cif_ID the id to get
+     * @return the file represented by the cif id
+     */
     private fun idAsFile(cif_ID: CIF_ID) = File(cacheFolder, "${cif_ID.db.simpleName}-${cif_ID.id}.cif")
 
+    // External
+
+    /**
+     * Thread safe function to download a CIF file given a [cif_ID] to the local storage
+     *
+     * @param cif_ID the cif id to download
+     */
     fun addCIFToCache(cif_ID: CIF_ID){
         synchronized(this, {
             if(!cacheHasCIF(cif_ID)){
@@ -37,6 +51,11 @@ object CIFSessionHandler {
         })
     }
 
+    /**
+     * Thread safe function to remove a downloaded CIF file given a [cif_ID]
+     *
+     * @param cif_ID the id to delete
+     */
     fun removeCIFFromCache(cif_ID: CIF_ID){
         synchronized(this, {
             if (cacheHasCIF(cif_ID)) {
@@ -45,12 +64,24 @@ object CIFSessionHandler {
         })
     }
 
+    /**
+     * Check function to see whether or not the datastore contains a cached CIF
+     *
+     * @param cif_ID the id to search for
+     * @return true if it does, false if not
+     */
     fun cacheHasCIF(cif_ID: CIF_ID) : Boolean {
         synchronized(this, {
             return cacheFolder.listFiles { curFile -> curFile == idAsFile(cif_ID) }.isNotEmpty()
         })
     }
 
+    /**
+     * Get the [cif_ID] as a file if it exists in the datastore, otherwise return null
+     *
+     * @param cif_ID the id to get
+     * @return the file if it exists, null if not
+     */
     fun getCIFFromCacheAsFile(cif_ID: CIF_ID) : File? {
         synchronized(this, {
             if (cacheHasCIF(cif_ID)) {

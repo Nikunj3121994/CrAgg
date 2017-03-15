@@ -1,15 +1,13 @@
 package com.github.decyg.CrAgg.cif.results
 
-import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.DBSource
-import com.github.decyg.CrAgg.database.query.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 
 /**
- * This class represents a more brief overview of a CIF_Node result.
+ * This class represents a brief mapping of a resulting query from the selected datasource given a mapping of the
+ * pregenerated [CommonQueryTerm] entries to [String] (the result)
  *
- * The structure of the fields here are kindly lifted from how the CCDC displays their results as i'm
- * not too experienced with chemistry so i wouldn't know what's common
- * Created by declan on 27/02/2017.
+ * @property cif_ID the ID object of this result
+ * @property resultMap the Mapping of [CommonQueryTerm] entries to [String]
  */
 data class CIFBriefResult(
         val cif_ID: CIF_ID,
@@ -37,13 +35,3 @@ data class CIFBriefResult(
     }
 }
 
-data class CIF_ID(val db : DBSource, val id : String){
-    constructor(db : String, id : String) : this(
-            DBSingleton.getDBSourceByName(db)!!,
-            id
-    )
-
-    override fun toString(): String {
-        return "${db.simpleName} : $id"
-    }
-}

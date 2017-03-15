@@ -9,49 +9,25 @@ import org.parboiled.support.Var
 import org.parboiled.trees.MutableTreeNodeImpl
 
 /**
- * This class represents an encoding of the formal grammar of CIF_Node.
+ * This class represents an encoding of the formal grammar of CIF_Node as closely as possible given the original spec.
  *
  * Various liberties were taking during the development of this due to the inconsistencies found in the official
  * grammar. Such inconsistencies include mismatches brackets, non specific handling of whitespaces and EOL's.
  *
- * The version below can successfully parse a variety of
+ * The version below can successfully parse a variety of CIF files fairly robustly
  *
  * It's encoded using the Parboiled library.
  */
 @BuildParseTree
-open class CIFParser : BaseParser<CIFParser.CIFNode>() {
-
-    //data class toggleResult(val vol : String) : GraphNode<toggleResult>
-
-    class CIFNode(val value : String) : MutableTreeNodeImpl<CIFNode>() {
-
-        constructor(value : String, vararg children : CIFNode) : this(value) {
-            for ((i, v) in children.withIndex()){
-                super.addChild(i, v)
-            }
-        }
-
-        fun addChildBlind(child : CIFNode) : CIFNode {
-
-            super.addChild(super.getChildren().count(), child)
-
-            return this
-        }
-
-        override fun toString(): String {
-            return value
-        }
-
-    }
+open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
 
     // Top level CIF_Node rules
 
     open fun CIF_Node() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("CIF_Node"))
+        val tempNode : Var<CIFNode> = Var(CIFNode("CIF_Node"))
 
         return Sequence(
                 Optional(Comments()),
-                //tempNode.set(tempNode.get().addChildBlind(pop())),
                 Optional(WhiteSpace()),
                 Optional(
                         DataBlock_Node(),
@@ -69,7 +45,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     }
 
     open fun DataBlock_Node() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("DataBlock_Node"))
+        val tempNode : Var<CIFNode> = Var(CIFNode("DataBlock_Node"))
 
         return Sequence(
                 DataBlockHeading(),
@@ -96,7 +72,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     }
 
     open fun SaveFrame_Node() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("SaveFrame_Node"))
+        val tempNode : Var<CIFNode> = Var(CIFNode("SaveFrame_Node"))
 
         return Sequence(
                 SaveFrameHeading(),
@@ -140,7 +116,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
     @SuppressSubnodes
     open fun LoopHeader() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("LoopHeader"))
+        val tempNode : Var<CIFNode> = Var(CIFNode("LoopHeader"))
 
         return Sequence(
                 LOOP_(),
@@ -155,7 +131,7 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
 
     @SuppressSubnodes
     open fun LoopBody() : Rule {
-        var tempNode : Var<CIFNode> = Var(CIFNode("LoopBody"))
+        val tempNode : Var<CIFNode> = Var(CIFNode("LoopBody"))
 
         return Sequence(
                 ZeroOrMore(
@@ -447,6 +423,43 @@ open class CIFParser : BaseParser<CIFParser.CIFNode>() {
     @SuppressNode
     open fun NotEOL() : Rule {
         return TestNot(EOL())
+    }
+
+    // Helper objects
+
+    companion object {
+
+        /**
+         * This is a Node implemetation, inheriting from one of the Parboiled classes.
+         * It's fairly simple as each node can store a [value] and a number of children of the type
+         * [CIFNode] so it can be recursive. The reason i made my own impl rather than using an existing one was
+         * because i wanted a way to add a node without an index or pass in a series of children at once.
+         *
+         * @property value the value of the node
+         */
+        class CIFNode(val value : String) : MutableTreeNodeImpl<CIFNode>() {
+
+            constructor(value : String, vararg children : CIFNode) : this(value) {
+                for ((i, v) in children.withIndex()){
+                    super.addChild(i, v)
+                }
+            }
+
+            /**
+             * Adds a child [CIFNode] object to the children list and returns itself for inline parser usage.
+             */
+            fun addChildBlind(child : CIFNode) : CIFNode {
+
+                super.addChild(super.getChildren().count(), child)
+
+                return this
+            }
+
+            override fun toString(): String {
+                return value
+            }
+
+        }
     }
 
 }

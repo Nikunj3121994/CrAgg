@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 
 /**
- * Created by declan on 16/02/2017.
+ * Spring controller that represents the index page
  */
-
 @Controller
 open class HomeController {
 
     @ModelAttribute("resultList")
     fun getResultList() = SearchResultModel()
 
+    /**
+     * Represents the index page, passes in the search model object to be acted upon and passed back
+     */
     @RequestMapping(value = "/")
     open fun indexPage(pageModel : Model) : String {
 
         pageModel.addAttribute("searchmodel", SearchModel())
 
-        //TermCategory.valu
-        //CommonQueryTerm.
         return "index"
     }
 

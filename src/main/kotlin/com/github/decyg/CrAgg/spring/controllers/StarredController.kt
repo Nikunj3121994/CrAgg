@@ -3,9 +3,9 @@ package com.github.decyg.CrAgg.spring.controllers
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.query.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
-import com.github.decyg.CrAgg.database.query.QueryQuantifier
+import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.database.query.TERM
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel

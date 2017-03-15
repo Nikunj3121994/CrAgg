@@ -15,13 +15,17 @@ import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 /**
- * Created by declan on 16/02/2017.
+ * Spring controller that represents the results page
  */
-
 @Controller
 @Service
 open class ResultsController {
 
+    /**
+     * Represents a result page in which the core is represented by the BriefResultModel and the full result model
+     * this could probably be more elegant but i'm not a spring developer first and foremost. The client uses the
+     * resultmodel to show a list of results
+     */
     @RequestMapping(value = "/results", method = arrayOf(RequestMethod.POST))
     open fun resultsPage(
             @Valid @ModelAttribute("resultList") resultModel : SearchResultModel,
@@ -45,6 +49,9 @@ open class ResultsController {
         return "results"
     }
 
+    /**
+     * Identical to above except it accepts a page index to paginate the result
+     */
     @RequestMapping(value = "/results", method = arrayOf(RequestMethod.GET))
     open fun resultsPageByPage(
             //@Valid @ModelAttribute("resultList") resultModel : SearchResultModel,

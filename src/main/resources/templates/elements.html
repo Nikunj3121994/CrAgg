@@ -11,10 +11,12 @@
 
 <div th:fragment="topbar">
     <nav class="light-blue lighten-1" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal Aggregator</a>
+        <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal
+            Aggregator</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="index.html"><i class="material-icons left">input</i>Upload CIF File</a></li>
-                <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a></li>
+                <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -25,7 +27,8 @@
         <div class="container">
 
             Made by <a class="orange-text text-lighten-3">Declan Neilson</a> for the University of Strathclyde.
-            Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a class="orange-text text-lighten-3">Edmund
+            Many thanks to <a class="orange-text text-lighten-3">John Levine</a> and <a
+                class="orange-text text-lighten-3">Edmund
             Cussen</a> for all the help and advice.
             <br>
 
@@ -37,7 +40,8 @@
     <ul class="pagination center-align col s12">
 
         <!-- waves-effect for not selected-->
-        <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"  th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
+        <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"
+            th:class="${i == (pageNum - 1) ? 'active' : 'waves-effect'}">
             <a href="#!" th:href="${'/results?page=' + (i + 1)}" th:text="${i + 1}">1</a>
         </li>
 
@@ -45,7 +49,8 @@
 </div>
 
 
-<div th:fragment="briefresult (item, starredModel)" th:with="cqt=${T(com.github.decyg.CrAgg.database.query.CommonQueryTerm)}">
+<div th:fragment="briefresult (item, starredModel)"
+     th:with="cqt=${T(com.github.decyg.CrAgg.database.query.CommonQueryTerm)}">
 
 
     <div class="row">
@@ -101,9 +106,11 @@
 
         <div class="col s5 left-align">
 
-            <a class="waves-effect waves-light btn" th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
+            <a class="waves-effect waves-light btn"
+               th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
 
-                <i th:text="${starredModel.briefResults.contains(item) ? 'star' : 'star_border'}" class="material-icons left" >star_border</i>
+                <i th:text="${starredModel.briefResults.contains(item) ? 'star' : 'star_border'}"
+                   class="material-icons left">star_border</i>
                 <span th:text="${starredModel.briefResults.contains(item) ? 'unstar' : 'star'}">star</span>
             </a>
 
@@ -115,12 +122,15 @@
                 <i class="material-icons right">list</i>
                 <span>more details</span>
             </a>
-            <a class="waves-effect waves-light btn" th:href="@{'/api/downloadResult/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+            <a class="waves-effect waves-light btn"
+               th:href="@{'/api/downloadResult/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
                 <i class="material-icons right">file_download</i>
                 <span>download</span>
             </a>
 
-            <a class="waves-effect waves-light btn" th:onclick="'starResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'" th:href="@{'/analyse/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+            <a class="waves-effect waves-light btn"
+               th:onclick="'starResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'"
+               th:href="@{'/analyse/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
                 <i class="material-icons right">play_arrow</i>
                 <span>analyse</span>
             </a>

@@ -5,13 +5,17 @@ import com.github.decyg.CrAgg.utils.Constants
 import org.springframework.cache.annotation.Cacheable
 
 /**
- * Created by declan on 08/03/2017.
+ * Provides a spring object for a list of [CIFBriefResult] objects
  */
 @Cacheable("resultModel")
-//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-//@Component
 data class BriefResultsModel(val briefResults : MutableList<CIFBriefResult>) {
 
+    /**
+     * Paginates the result and uses [Constants] to provide a selection of results given how many results are specified
+     *
+     * @param page what page of results to show
+     * @return the brief results model
+     */
     fun paginate(page : Int = 1): BriefResultsModel {
 
         // chunk it into pages for pagination, see Constants for limits

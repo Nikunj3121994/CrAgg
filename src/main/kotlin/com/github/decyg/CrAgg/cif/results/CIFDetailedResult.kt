@@ -3,13 +3,17 @@ package com.github.decyg.CrAgg.cif.results
 import com.github.decyg.CrAgg.cif.CIFParser
 
 /**
- * This is a layer on top of the CIFNode type to hide the raw map from the users, this object represents it in a
- * no nonsense, hierarchical parsed format where a user for example can do .getCif.getBodyByID("bodyid")
+ * This is a layer on top of the [CIFParser.CIFNode] type to hide the raw nodes from the programmers, it allows a user to
+ * easily access various components of the result with well named objects such as [CIF], [DataBlock], [SaveFrame],
+ * [DataItem], [LoopedDataItem] and finally [LoopedDataItemGroup]
  *
- * Takes in a File, turns it into a CIFNode, traverses it and populates its' root CIF_Node value
- * Created by declan on 27/02/2017.
+ * More details on the CIF syntax this abstracts can be found here https://www.iucr.org/resources/cif/spec/version1.1/cifsyntax
+ *
+ * @property cifNode the raw [CIFParser.CIFNode] object to parse
+ * @constructor does the parsing
+ *
  */
-class CIFDetailedResult(val cifNode : CIFParser.CIFNode) {
+class CIFDetailedResult(val cifNode : CIFParser.Companion.CIFNode) {
 
     // In the abstraction i want to seperate the level of a regular top level dataitem on a datablock
     // from a looped data item, this is because a looped data item is essentially a table and representing this
@@ -112,24 +116,42 @@ class CIFDetailedResult(val cifNode : CIFParser.CIFNode) {
 
 // Inner definitions for organisation
 
+/**
+ * A small typealias to wrap a map in a single name as there's really no point making a whole new object for it.
+ */
 typealias LoopedDataItemGroup = MutableMap<String, LoopedDataItem>
 
+/**
+ * Represents a looped data item where the [tag] is the "header" and the [value] is a list of entries in the column
+ */
 data class LoopedDataItem(
         val tag : String,
         val value : MutableList<String>
 )
 
+/**
+ * Represents a [tag] -> [value] data item representation
+ */
 data class DataItem(
         val tag : String,
         val value : String
 )
 
+/**
+ * Represents a save frame. As per the spec, stores its header as a [String], a [Map] of [String] to [DataItem]s and
+ * a [List] of [LoopedDataItemGroup]
+ */
 data class SaveFrame(
         var saveFrameHeader : String,
         var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
         var loopedDataItems : MutableList<LoopedDataItemGroup>
 )
 
+/**
+ * Represents a datablock, note that here and [SaveFrame] both contain their own headers as strings even though they're
+ * stored in a map, this is just to make it easier to access the header without referring the the containing map.
+ *
+ */
 data class DataBlock(
         var dataBlockHeader : String, // consistency
         var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
@@ -137,6 +159,9 @@ data class DataBlock(
         var saveFrames : MutableMap<String, SaveFrame>
 )
 
+/**
+ * Top level object that stores a map of data block ids to [DataBlock] objects
+ */
 data class CIF(
         var dataBlocks : MutableMap<String, DataBlock>
 )

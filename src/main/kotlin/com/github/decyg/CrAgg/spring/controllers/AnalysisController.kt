@@ -2,10 +2,10 @@ package com.github.decyg.CrAgg.spring.controllers
 
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.query.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
-import com.github.decyg.CrAgg.database.query.QueryQuantifier
 import com.github.decyg.CrAgg.database.query.TERM
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -15,17 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping
 import javax.servlet.http.HttpSession
 
 /**
- * Created by declan on 16/02/2017.
+ * Spring controller that represents the various analysis endpoints
  */
-
 @Controller
 open class AnalysisController {
 
     @ModelAttribute("resultList")
     fun getResultList() = SearchResultModel()
 
-
-
+    /**
+     * Handles getting the "analyse" page given a database source and id as strings.
+     * This controller stars the selected item if not already starred, then it gets the brief and detailed
+     * objects by querying the datasource implementation for the specific id and it passes all that to the client
+     */
     @RequestMapping(value = "/analyse/{dbSource}/{dbID}")
     open fun analysisPage(
             pageModel : Model,
@@ -34,9 +36,7 @@ open class AnalysisController {
             @PathVariable dbID : String
             ) : String {
 
-
         val cif_ID = CIF_ID(dbSource, dbID)
-
 
         val isStarred = StarredController.getStarredResults(session).briefResults.any { it.cif_ID == cif_ID }
 

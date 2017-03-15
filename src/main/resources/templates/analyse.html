@@ -7,20 +7,23 @@
 
     <!-- CSS  -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
 
     <!--  Scripts-->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
     <script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
-    <script type="text/javascript" src="../static/js/jsmol/JSmol.min.nojq.js" th:src="@{/js/jsmol/JSmol.min.nojq.js}"></script>
+    <script type="text/javascript" src="../static/js/jsmol/JSmol.min.nojq.js"
+            th:src="@{/js/jsmol/JSmol.min.nojq.js}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script>
         $(function () {
             $('#jstree_detailed_cif').jstree({
-                "core" : {"html_titles" : true}
+                "core": {"html_titles": true}
             });
         });
     </script>
@@ -40,128 +43,138 @@
 
 
 <main>
-        <div class="container">
+    <div class="container">
 
-            <br>
+        <br>
 
-            <div class="row">
-                <div class="card-panel light-blue lighten-1">
+        <div class="row">
+            <div class="card-panel light-blue lighten-1">
                     <span class="white-text">
                         This is the analyser page, use it to see detailed information about a selected element as well as compare details.
                     </span>
-                </div>
             </div>
-
-
-            <div class="row">
-                <div class="section col s12 grey lighten-5">
-                    <h5>Select a starred element</h5>
-                    <select onchange="location = this.value">
-                        <option value="" disabled selected>Choose a starred result to focus on</option>
-                        <option th:each="res, it : ${starredModel.briefResults}" th:text="${res.cif_ID}" th:selected="${res.cif_ID == curCIFID}" th:value="'/analyse/' + ${res.cif_ID.db.simpleName} + '/' + ${res.cif_ID.id}"></option>
-                    </select>
-                    <label>Element Selector</label>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="section col s12 grey lighten-3">
-                    <h5>Brief Overview</h5>
-                    <div th:replace="elements :: briefresult(${briefCIF}, ${starredModel})"></div>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="row">
-                <div class="section col s6 grey lighten-5">
-                    <h5>JSmol Preview</h5>
-                    <script type="text/javascript" th:inline="javascript">
-                        /*<![CDATA[*/
-                        var cifFile = /*[[@{'/api/downloadResult/' + ${dbSource} + '/' + ${dbID} + '/'}]]*/ '';
-
-                        var Info = {
-                            width: 500,
-                            height: 500,
-                            color: "0x000000",
-                            use: "HTML5",
-                            j2sPath: "/js/jsmol/j2s",
-                            script: "load " + cifFile + " {1,1,1}; hide symmetry",
-                            disableInitialConsole: true,
-                            allowJavaScript: true,
-                            console: "none"
-                        };
-                        var jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
-                        /*]]>*/
-                    </script>
-                </div>
-                <div class="section col s6 grey lighten-5">
-                    <h5>Graphs</h5>
-
-                </div>
-            </div>
-
-            <div class="row">
-
-                <div class="section col s12 grey lighten-3">
-                    <h5>CIF Details</h5>
-                    <div id="jstree_detailed_cif">
-                        <ul>
-                            <li th:each="cifEntry, it : ${detailedCIF.cifResult.dataBlocks}" th:inline="text" th:class="${it.first} ? 'jstree-open'">
-                                [[${cifEntry.key}]]
-                                <ul>
-                                    <li>Data Items
-                                        <ul>
-                                            <li th:each="dataitemEntry : ${cifEntry.value.dataItems}" th:inline="text">
-                                                [[${dataitemEntry.value.tag}]]
-                                                <ul>
-                                                    <li th:text="${dataitemEntry.value.value}" data-jstree='{"disabled":true}'></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li>Looped Data Items
-                                        <ul>
-                                            <li th:each="loopedDataItemGroup : ${cifEntry.value.loopedDataItems}" th:inline="text">
-                                                [[${loopedDataItemGroup.keySet()}]]
-                                                <ul>
-                                                    <li>
-
-                                                        <table>
-                                                            <thead>
-                                                            <tr>
-                                                                <th th:each="header : ${loopedDataItemGroup.keySet()}" th:text="${header}">Header</th>
-                                                            </tr>
-                                                            </thead>
-
-                                                            <tbody>
-
-                                                            <tr th:each="rowI : ${#numbers.sequence(0, loopedDataItemGroup.values()[0].value.size() - 1)}">
-                                                                <td th:each="key : ${loopedDataItemGroup.keySet()}" th:text="${loopedDataItemGroup.get(key).value[rowI]}">Item</td>
-                                                            </tr>
-
-                                                            </tbody>
-                                                        </table>
-
-                                                    </li>
-                                                </ul>
-
-                                            </li>
-
-                                        </ul>
-                                    </li>
-                                </ul>
-
-                            </li>
-                        </ul>
-                    </div>
-
-                    <br>
-                </div>
-            </div>
-
-
         </div>
+
+
+        <div class="row">
+            <div class="section col s12 grey lighten-5">
+                <h5>Select a starred element</h5>
+                <select onchange="location = this.value">
+                    <option value="" disabled selected>Choose a starred result to focus on</option>
+                    <option th:each="res, it : ${starredModel.briefResults}" th:text="${res.cif_ID}"
+                            th:selected="${res.cif_ID == curCIFID}"
+                            th:value="'/analyse/' + ${res.cif_ID.db.simpleName} + '/' + ${res.cif_ID.id}"></option>
+                </select>
+                <label>Element Selector</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="section col s12 grey lighten-3">
+                <h5>Brief Overview</h5>
+                <div th:replace="elements :: briefresult(${briefCIF}, ${starredModel})"></div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="section col s6 grey lighten-5">
+                <h5>JSmol Preview</h5>
+                <script type="text/javascript" th:inline="javascript">
+                    /*<![CDATA[*/
+                    var cifFile = /*[[@{'/api/downloadResult/' + ${dbSource} + '/' + ${dbID} + '/'}]]*/ '';
+
+                    var Info = {
+                        width: 500,
+                        height: 500,
+                        color: "0x000000",
+                        use: "HTML5",
+                        j2sPath: "/js/jsmol/j2s",
+                        script: "load " + cifFile + " {1,1,1}; hide symmetry",
+                        disableInitialConsole: true,
+                        allowJavaScript: true,
+                        console: "none"
+                    };
+                    var jmolApplet0 = Jmol.getApplet("jmolApplet0", Info);
+                    /*]]>*/
+                </script>
+            </div>
+            <div class="section col s6 grey lighten-5">
+                <h5>Graphs</h5>
+
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="section col s12 grey lighten-3">
+                <h5>CIF Details</h5>
+                <div id="jstree_detailed_cif">
+                    <ul>
+                        <li th:each="cifEntry, it : ${detailedCIF.cifResult.dataBlocks}" th:inline="text"
+                            th:class="${it.first} ? 'jstree-open'">
+                            [[${cifEntry.key}]]
+                            <ul>
+                                <li>Data Items
+                                    <ul>
+                                        <li th:each="dataitemEntry : ${cifEntry.value.dataItems}" th:inline="text">
+                                            [[${dataitemEntry.value.tag}]]
+                                            <ul>
+                                                <li th:text="${dataitemEntry.value.value}"
+                                                    data-jstree='{"disabled":true}'></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Looped Data Items
+                                    <ul>
+                                        <li th:each="loopedDataItemGroup : ${cifEntry.value.loopedDataItems}"
+                                            th:inline="text">
+                                            [[${loopedDataItemGroup.keySet()}]]
+                                            <ul>
+                                                <li>
+
+                                                    <table>
+                                                        <thead>
+                                                        <tr>
+                                                            <th th:each="header : ${loopedDataItemGroup.keySet()}"
+                                                                th:text="${header}">Header
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+
+                                                        <tbody>
+
+                                                        <tr th:each="rowI : ${#numbers.sequence(0, loopedDataItemGroup.values()[0].value.size() - 1)}">
+                                                            <td th:each="key : ${loopedDataItemGroup.keySet()}"
+                                                                th:text="${loopedDataItemGroup.get(key).value[rowI]}">
+                                                                Item
+                                                            </td>
+                                                        </tr>
+
+                                                        </tbody>
+                                                    </table>
+
+                                                </li>
+                                            </ul>
+
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        </li>
+                    </ul>
+                </div>
+
+                <br>
+            </div>
+        </div>
+
+
+    </div>
 
 
 </main>
