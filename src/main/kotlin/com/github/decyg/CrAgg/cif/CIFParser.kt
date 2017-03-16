@@ -194,17 +194,13 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
 
     @SuppressNode
     open fun Value() : Rule {
-        return Sequence(
-                FirstOf(
-                        Sequence(Numeric(), Test(WhiteSpace())),
-                        '.',
-                        '?',
-                        Sequence(TextField(), Test(WhiteSpace())),
-                        Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace()))
-                ),
-                push(CIFNode(match())) // This is potentially going to need changing due to the fact that it pushed the delimiters for textfields
-        )
-
+        return FirstOf(
+                    Sequence(Numeric(), Test(WhiteSpace())), // pushing will be done in numeric
+                    Sequence('.', push(CIFNode(match()))), // push here
+                    Sequence('?', push(CIFNode(match()))), // push here
+                    Sequence(TextField(), Test(WhiteSpace())), // pushing will be done in TextField
+                    Sequence(TestNot(ReservedString()), CharString(), Test(WhiteSpace())) // pushing will be done in CharString
+            )
     }
 
     // Numeric values
@@ -214,31 +210,33 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
     @SuppressNode
     open fun Numeric() : Rule {
         return Sequence(
-                Optional(AnyOf("+-")),
-                FirstOf(
-                        Sequence(
-                                ZeroOrMore(Digit()),
-                                '.',
-                                OneOrMore(Digit())
-                        ),
-                        Sequence(
-                                OneOrMore(Digit()),
-                                '.'
-                        ),
-                        OneOrMore(Digit())
-                ),
-                Optional(
-                        AnyOf("eE"),
+                Sequence(
                         Optional(AnyOf("+-")),
-                        OneOrMore(Digit())
+                        FirstOf(
+                            Sequence(
+                                    ZeroOrMore(Digit()),
+                                    '.',
+                                    OneOrMore(Digit())
+                            ),
+                            Sequence(
+                                    OneOrMore(Digit()),
+                                    '.'
+                            ),
+                            OneOrMore(Digit())
+                    ),
+                        Optional(
+                            AnyOf("eE"),
+                            Optional(AnyOf("+-")),
+                            OneOrMore(Digit())
+                    ),
+                        Optional(
+                            '(',
+                            OneOrMore(Digit()),
+                            ')'
+                    ),
+                        Test(WhiteSpace())
                 ),
-                Optional(
-                        '(',
-                        OneOrMore(Digit()),
-                        ')'
-                ),
-                Test(WhiteSpace())
-
+                push(CIFNode(match()))
         )
     }
 
@@ -260,19 +258,28 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
 
     @SuppressNode
     open fun UnquotedString() : Rule {
+        val tempStr : Var<String> = Var("")
+
         return FirstOf(
                 Sequence(
                         Test(EOL()),
-                        OrdinaryChar(),
-                        ZeroOrMore(NonBlankChar())
+                        Sequence(
+                            OrdinaryChar(),
+                            ZeroOrMore(NonBlankChar())
+                        ),
+                        push(CIFNode(match()))
                 ),
                 Sequence(
                         Test(NotEOL()),
                         FirstOf(
-                                OrdinaryChar(),
+                                Sequence(
+                                        OrdinaryChar(),
+                                        tempStr.set(match())
+                                ),
                                 ';'
                         ),
-                        ZeroOrMore(NonBlankChar())
+                        ZeroOrMore(NonBlankChar()),
+                        push(CIFNode("${tempStr.get()}${match()}"))
                 )
         )
     }
@@ -285,6 +292,7 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
                         AnyPrintChar(),
                         TestNot(EOL())
                 ),
+                push(CIFNode(match())),
                 '\''
         )
     }
@@ -296,6 +304,7 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
                         AnyPrintChar(),
                         TestNot(EOL())
                 ),
+                push(CIFNode(match())),
                 '\"'
         )
     }
@@ -305,11 +314,14 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
     }
 
     open fun SemiColonTextField() : Rule {
+        val tempStr : Var<String> = Var("")
+
         return Sequence(
                 ';',
                 ZeroOrMore(
                         AnyPrintChar()
                 ),
+                tempStr.set(match()),
                 EOL(),
                 ZeroOrMore(
                         Optional(
@@ -318,7 +330,9 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
                         ),
                         EOL()
                 ),
-                ';'
+                tempStr.set("${tempStr.get()}\n${match()}"),
+                ';',
+                push(CIFNode(tempStr.get()))
         )
     }
 
@@ -430,7 +444,7 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
     companion object {
 
         /**
-         * This is a Node implemetation, inheriting from one of the Parboiled classes.
+         * This is a Node implementation, inheriting from one of the Parboiled classes.
          * It's fairly simple as each node can store a [value] and a number of children of the type
          * [CIFNode] so it can be recursive. The reason i made my own impl rather than using an existing one was
          * because i wanted a way to add a node without an index or pass in a series of children at once.
