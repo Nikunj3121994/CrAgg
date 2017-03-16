@@ -77,18 +77,18 @@ object CIFSessionHandler {
     }
 
     /**
-     * Get the [cif_ID] as a file if it exists in the datastore, otherwise return null
+     * Get the [cif_ID] as a file from the datastore, will download if it doesn't exist
      *
      * @param cif_ID the id to get
-     * @return the file if it exists, null if not
+     * @return the file
      */
-    fun getCIFFromCacheAsFile(cif_ID: CIF_ID) : File? {
+    fun getCIFFromCacheAsFile(cif_ID: CIF_ID) : File {
         synchronized(this, {
-            if (cacheHasCIF(cif_ID)) {
-                return idAsFile(cif_ID)
-            } else {
-                return null
+            if (!cacheHasCIF(cif_ID)) {
+                addCIFToCache(cif_ID)
             }
+
+            return idAsFile(cif_ID)
         })
     }
 }

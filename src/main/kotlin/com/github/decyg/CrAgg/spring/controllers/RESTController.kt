@@ -2,6 +2,7 @@ package com.github.decyg.CrAgg.spring.controllers
 
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.spring.session.CIFSessionHandler
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import java.io.ByteArrayOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
@@ -21,6 +25,8 @@ import javax.servlet.http.HttpSession
 @Controller
 @Service
 class RESTController {
+
+    // POJOs for jackson
 
     /**
      * Acts as a wrapper for use with Jackson in Spring, can't use CIF_ID as the primary constructor takes in a
@@ -34,6 +40,8 @@ class RESTController {
             return CIF_ID(db, id)
         }
     }
+
+    // Actual Endpoints
 
     /**
      * Exposes an endpoint that accepts the json
@@ -93,7 +101,7 @@ class RESTController {
 
         val cif_ID = CIF_ID(dbsource, dbid)
 
-        val cifFile = CIFSessionHandler.getCIFFromCacheAsFile(cif_ID) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
+        val cifFile = CIFSessionHandler.getCIFFromCacheAsFile(cif_ID)
 
         return ResponseEntity
                 .ok()
@@ -101,6 +109,36 @@ class RESTController {
                 .contentLength(cifFile.length())
                 .contentType(MediaType.parseMediaType("txt/plain"))
                 .body(InputStreamResource(cifFile.inputStream()))
+
+    }
+
+    /**
+     * Represents a way to download many CIF files as a zip file, takes in an array of CIF_Result json objects
+     */
+    @RequestMapping(value = "/api/downloadMany", method = arrayOf(RequestMethod.POST), produces = arrayOf("application/zip"))
+    open fun downloadMany(
+            resp : HttpServletResponse,
+            @RequestBody source : Array<CIF_Result>,
+            session : HttpSession
+    ) : ResponseEntity<ByteArrayResource> {
+
+        val baos = ByteArrayOutputStream()
+        val zipOut = ZipOutputStream(baos)
+
+        source.forEach {
+            val cifFile = CIFSessionHandler.getCIFFromCacheAsFile(it.toID())
+            val zipEntry = ZipEntry(cifFile.name)
+
+            zipOut.putNextEntry(zipEntry)
+            zipOut.write(cifFile.readBytes())
+            zipOut.closeEntry()
+        }
+
+        return ResponseEntity
+                .ok()
+                .header("Content-disposition", "attachment;filename=cifdownload.zip")
+                .contentType(MediaType.parseMediaType("application/zip"))
+                .body(ByteArrayResource(baos.toByteArray()))
 
     }
 
