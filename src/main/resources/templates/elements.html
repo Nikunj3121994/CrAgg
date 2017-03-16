@@ -37,7 +37,14 @@
 </div>
 
 <div th:fragment="paginator (pageNum, totalNumResults)">
-    <ul class="pagination center-align col s12">
+
+    <p class="left-align col s6">
+        <a class="waves-effect waves-light btn" onclick="downloadAllSelected()">
+            <i class="material-icons right">file_download</i>
+            <span>download selected</span>
+        </a>
+    </p>
+    <ul class="pagination right-align col s6">
 
         <!-- waves-effect for not selected-->
         <li class="active" th:each="i : ${#numbers.sequence(0, totalNumResults - 1)}"
@@ -55,7 +62,12 @@
 
     <div class="row">
 
-        <h5 class="col s12 center-align" th:text="${item.cif_ID.toString()}">Header</h5>
+        <h5 class="col s10 left-align" th:text="${item.cif_ID.toString()}">Header</h5>
+
+        <p class="col s2 right-align">
+            <input type="checkbox" id="id" th:attr="data-db=${item.cif_ID.db.simpleName},data-id=${item.cif_ID.id}" th:id="${item.cif_ID}"/>
+            <label for="id" th:for="${item.cif_ID}">Select</label>
+        </p>
 
     </div>
 

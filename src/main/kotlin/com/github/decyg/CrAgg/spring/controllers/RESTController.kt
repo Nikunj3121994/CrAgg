@@ -134,6 +134,8 @@ class RESTController {
             zipOut.closeEntry()
         }
 
+        zipOut.close()
+
         return ResponseEntity
                 .ok()
                 .header("Content-disposition", "attachment;filename=cifdownload.zip")

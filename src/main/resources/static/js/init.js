@@ -92,3 +92,52 @@ function downloadResult(buttonsource, dbsource, dbid) {
         }
     });
 }
+
+function downloadAllSelected() {
+
+    var finaljson = [];
+
+    $("input:checkbox").each( function( index, element ){
+
+        if(element.checked){
+            var db = element.getAttribute("data-db");
+            var id = element.getAttribute("data-id");
+
+            finaljson[index] = {db:db, id:id};
+
+        }
+    });
+
+    console.log(finaljson);
+
+    /*$.ajax({
+        url: '/api/downloadMany',
+        type: 'POST',
+        data: JSON.stringify(finaljson),
+        contentType: 'application/json'
+    });*/
+
+    // thanks mystery man http://stackoverflow.com/questions/16086162/handle-file-download-from-ajax-post
+    // Use XMLHttpRequest instead of Jquery $ajax
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        var a;
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+            // Trick for making downloadable link
+            a = document.createElement('a');
+            a.href = window.URL.createObjectURL(xhttp.response);
+            // Give filename you wish to download
+            a.download = "cifdownload.zip";
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+        }
+    };
+// Post data to URL which handles post request
+    xhttp.open("POST", '/api/downloadMany');
+    xhttp.setRequestHeader("Content-Type", "application/json");
+// You should set responseType as blob for binary responses
+    xhttp.responseType = 'blob';
+    xhttp.send(JSON.stringify(finaljson));
+
+}
