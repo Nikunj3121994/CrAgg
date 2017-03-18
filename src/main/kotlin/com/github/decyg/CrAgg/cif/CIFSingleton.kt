@@ -1,7 +1,6 @@
 package com.github.decyg.CrAgg.cif
 
 import org.parboiled.Parboiled
-import org.parboiled.errors.ErrorUtils
 import org.parboiled.parserunners.ReportingParseRunner
 import org.parboiled.support.ParsingResult
 
@@ -31,7 +30,7 @@ object CIFSingleton {
                 .run(cifText)
 
         if (parseRes.parseErrors.isEmpty().not()){
-            throw ParseException(ErrorUtils.printParseError(parseRes.parseErrors?.get(0)))
+            //throw ParseException(ErrorUtils.printParseError(parseRes.parseErrors?.get(0)))
         }
 
         return parseRes.resultValue

@@ -1,6 +1,8 @@
 package com.github.decyg.CrAgg.cif.results
 
 import com.github.decyg.CrAgg.cif.CIFParser
+import org.springframework.data.annotation.Id
+import org.springframework.data.elasticsearch.annotations.Document
 
 /**
  * This is a layer on top of the [CIFParser.CIFNode] type to hide the raw nodes from the programmers, it allows a user to
@@ -13,7 +15,11 @@ import com.github.decyg.CrAgg.cif.CIFParser
  * @constructor does the parsing
  *
  */
-class CIFDetailedResult(val cifNode : CIFParser.Companion.CIFNode) {
+@Document(indexName = "cif_files", type = "cif")
+class CIFDetailedResult(
+        @Id var stringifiedID : String = "",
+        var cifResult : CIF = CIF(mutableMapOf())
+) {
 
     // In the abstraction i want to seperate the level of a regular top level dataitem on a datablock
     // from a looped data item, this is because a looped data item is essentially a table and representing this
@@ -25,9 +31,10 @@ class CIFDetailedResult(val cifNode : CIFParser.Companion.CIFNode) {
     // Note that i'm using maps but also storing the key inside the stored value, this is potentially redundant
     // but i did it this way to be consistent across all wrapped objects and make accesses easy and straight forward
 
-    var cifResult : CIF = CIF(mutableMapOf())
 
-    init {
+    fun populateCIF(cif_ID : CIF_ID, cifNode : CIFParser.Companion.CIFNode) : CIFDetailedResult {
+
+        this.stringifiedID = cif_ID.toString()
 
         // Note for the implementation below, it's not a recursive function as it doesn't need to be. It just needs
         // to break down the Node representation into the user readable format
@@ -35,80 +42,85 @@ class CIFDetailedResult(val cifNode : CIFParser.Companion.CIFNode) {
         // For all datablocks on the top level
         // All children are guaranteed to be DataBlock_Nodes
 
-        for(dataBlock in cifNode.children) {
+        if(cifNode != null) {
 
-            var curHeading = ""
-            val curBlock = DataBlock("", mutableMapOf(), mutableListOf(), mutableMapOf())
+            for (dataBlock in cifNode.children) {
 
-            for (dataBlockChild in dataBlock.children) {
+                var curHeading = ""
+                val curBlock = DataBlock(mutableMapOf(), mutableListOf(), mutableMapOf())
 
-                when (dataBlockChild.value) {
+                for (dataBlockChild in dataBlock.children) {
 
-                    "DataBlockHeading" -> {
-                        curHeading = dataBlockChild.children[0].value
-                        curBlock.dataBlockHeader = curHeading
-                    }
+                    when (dataBlockChild.value) {
 
-                    "LoopedDataItem" -> {
+                        "DataBlockHeading" -> {
+                            curHeading = dataBlockChild.children[0].value
+                        }
 
-                        // In this case, a looped data item will contain two children, a loopheader and a body.
-                        // Loops are curious in that the number of times it tries to apply the header to a value is dictated
-                        // by the number of headers. For example with one header, every value will be mapped to that header
-                        // However with five headers, value 1, 2, 3, 4, 5 will be mapped to header 1, 2, 3, 4, 5 and on the next
-                        // iteration, value 6, 7, 8, 9, 10 will be mapped again to header 1, 2, 3, 4, 5 respectively
+                        "LoopedDataItem" -> {
 
-                        // The first index should be LoopHeader and the second should be LoopBody
+                            // In this case, a looped data item will contain two children, a loopheader and a body.
+                            // Loops are curious in that the number of times it tries to apply the header to a value is dictated
+                            // by the number of headers. For example with one header, every value will be mapped to that header
+                            // However with five headers, value 1, 2, 3, 4, 5 will be mapped to header 1, 2, 3, 4, 5 and on the next
+                            // iteration, value 6, 7, 8, 9, 10 will be mapped again to header 1, 2, 3, 4, 5 respectively
 
-                        // a looped data item is a list of maps, where the maps represent a key being mapped to a
-                        // loopeddataitem
+                            // The first index should be LoopHeader and the second should be LoopBody
 
-                        val loopHeader = dataBlockChild.children[0]
-                        val loopBody = dataBlockChild.children[1]
-                        var loopCounter = 0
-                        val loopGroup : MutableMap<String, LoopedDataItem> = mutableMapOf()
+                            // a looped data item is a list of maps, where the maps represent a key being mapped to a
+                            // loopeddataitem
 
-                        for (loopItem in loopBody.children) {
+                            val loopHeader = dataBlockChild.children[0]
+                            val loopBody = dataBlockChild.children[1]
+                            var loopCounter = 0
+                            val loopGroup: MutableMap<String, MutableList<String>> = mutableMapOf()
 
-                            val tag = loopHeader.children[loopCounter].value
-                            val value = loopItem.value
+                            for (loopItem in loopBody.children) {
 
-                            if(!loopGroup.containsKey(tag)){
-                                loopGroup.put(
-                                        tag,
-                                        LoopedDataItem(tag, mutableListOf())
-                                )
+                                val tag = loopHeader.children[loopCounter].value
+                                val value = loopItem.value
+
+                                if (!loopGroup.containsKey(tag)) {
+                                    loopGroup.put(
+                                            tag,
+                                            mutableListOf()
+                                    )
+                                }
+
+                                loopGroup.getValue(tag).add(value)
+
+                                if (++loopCounter == loopHeader.children.count())
+                                    loopCounter = 0
+
                             }
 
-                            loopGroup.getValue(tag).value.add(value)
-
-                            if (++loopCounter == loopHeader.children.count())
-                                loopCounter = 0
+                            curBlock.loopedDataItems.add(loopGroup)
 
                         }
 
-                        curBlock.loopedDataItems.add(loopGroup)
+                        "DataItem" -> {
+                            // Just compose it into the component object and add it to the curblock
+                            curBlock.dataItems.put(
+                                    dataBlockChild.children[0].value,
+                                    dataBlockChild.children[1].value
+                            )
+                        }
 
-                    }
+                        "SaveFrame" -> {
+                            // ???
+                        }
 
-                    "DataItem" -> {
-                        // Just compose it into the component object and add it to the curblock
-                        curBlock.dataItems.put(
-                                dataBlockChild.children[0].value,
-                                DataItem(dataBlockChild.children[0].value, dataBlockChild.children[1].value)
-                        )
-                    }
-
-                    "SaveFrame" -> {
-                        // ???
                     }
 
                 }
 
+                cifResult.dataBlocks.put(curHeading, curBlock)
+
             }
 
-            cifResult.dataBlocks.put(curHeading, curBlock)
-
         }
+
+        return this
 
     }
 
@@ -119,32 +131,16 @@ class CIFDetailedResult(val cifNode : CIFParser.Companion.CIFNode) {
 /**
  * A small typealias to wrap a map in a single name as there's really no point making a whole new object for it.
  */
-typealias LoopedDataItemGroup = MutableMap<String, LoopedDataItem>
+typealias LoopedDataItemGroup = MutableMap<String, MutableList<String>>
 
-/**
- * Represents a looped data item where the [tag] is the "header" and the [value] is a list of entries in the column
- */
-data class LoopedDataItem(
-        val tag : String,
-        val value : MutableList<String>
-)
-
-/**
- * Represents a [tag] -> [value] data item representation
- */
-data class DataItem(
-        val tag : String,
-        val value : String
-)
 
 /**
  * Represents a save frame. As per the spec, stores its header as a [String], a [Map] of [String] to [DataItem]s and
  * a [List] of [LoopedDataItemGroup]
  */
 data class SaveFrame(
-        var saveFrameHeader : String,
-        var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
-        var loopedDataItems : MutableList<LoopedDataItemGroup>
+        var dataItems : MutableMap<String, String> = mutableMapOf(), // the data item wrapper arguably isn't needed but it's consistent
+        var loopedDataItems : MutableList<LoopedDataItemGroup> = mutableListOf()
 )
 
 /**
@@ -153,15 +149,14 @@ data class SaveFrame(
  *
  */
 data class DataBlock(
-        var dataBlockHeader : String, // consistency
-        var dataItems : MutableMap<String, DataItem>, // the data item wrapper arguably isn't needed but it's consistent
-        var loopedDataItems : MutableList<LoopedDataItemGroup>,
-        var saveFrames : MutableMap<String, SaveFrame>
+        var dataItems : MutableMap<String, String> = mutableMapOf(), // the data item wrapper arguably isn't needed but it's consistent
+        var loopedDataItems : MutableList<LoopedDataItemGroup> = mutableListOf(),
+        var saveFrames : MutableMap<String, SaveFrame> = mutableMapOf()
 )
 
 /**
  * Top level object that stores a map of data block ids to [DataBlock] objects
  */
 data class CIF(
-        var dataBlocks : MutableMap<String, DataBlock>
+        var dataBlocks : MutableMap<String, DataBlock> = mutableMapOf()
 )

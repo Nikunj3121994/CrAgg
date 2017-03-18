@@ -5,6 +5,7 @@ import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import java.io.File
 import java.io.InputStream
 
 /**
@@ -19,6 +20,11 @@ interface DBAbstraction {
      * format the datasource is in, eg with SQL it maps [CommonQueryTerm] to [String] field headers
      */
     val queryMap : Map<CommonQueryTerm, String>
+
+    /**
+     * A [File] object pointing to the folder where all the cifService files should be stored
+     */
+    val dataFolder : File
 
     /**
      * Takes in a list of [QueryExpression] objects which encapsulate a "term" and queries the data source in the source specific
@@ -45,5 +51,12 @@ interface DBAbstraction {
      * @return an [InputStream] to be used however of the CIF file
      */
     fun getStreamForID(cifID : CIF_ID) : InputStream
+
+    /**
+     * This implements the source specific method for updating the local cifService storage, the storage of all cifService files in this
+     * source. This will nominally be called on all implementations every day at midnight or on initial startup of the
+     * program.
+     */
+    fun updateLocalCIFStorage()
 
 }

@@ -7,22 +7,71 @@ import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBAbstraction
+import com.github.decyg.CrAgg.database.indexer.ElasticSingleton
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.utils.Constants
+import java.io.BufferedReader
+import java.io.File
 import java.io.InputStream
+import java.io.InputStreamReader
 import java.net.URL
 import java.sql.DriverManager
 import java.util.*
+
+
 
 /**
  * An implementation for the COD (Crystallographic Open Database)
  * Created by declan on 01/03/2017.
  */
-class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
+class COD(
+        override val queryMap: Map<CommonQueryTerm, String>,
+        override val dataFolder: File
+) : DBAbstraction {
 
+    override fun updateLocalCIFStorage() {
+
+        // thanks to the joys of rsync on window, the standard path isn't good enough so i need to convert
+        // can do this programmatically and system agnostic by attempting to run it, if i get a 1 error code, it's
+        // the syntax and i need to rerun it
+        // C:\WINDOWS\BLAH\BLAH
+        // to /cygdrive/c/WINDOWS/BLAH
+
+        var dataPath = dataFolder.absolutePath
+
+        if(System.getProperty("os.name").toLowerCase().contains("win"))
+            dataPath = dataPath.replace('\\', '/').replace("C:", "/cygdrive/c");
+
+
+        val cmd = arrayOf("rsync", "-av", "--delete", "rsync://www.crystallography.net/cif/", dataPath)
+        val pb = ProcessBuilder()
+                .command(*cmd)
+                .start()
+
+        val reader = BufferedReader(InputStreamReader(pb.inputStream))
+
+        while(true){
+            val line : String? = reader.readLine()
+            if(line != null){
+                val idFound = "([0-9]+)\\.cif".toRegex().toPattern()
+
+                val matcher = idFound.matcher(line)
+
+                if(matcher.find()){
+                    ElasticSingleton.updateIndexForFile(CIF_ID(this::class, matcher.group(1)), line.replace('/', '\\'))
+                }
+
+            } else {
+                break
+            }
+        }
+
+        reader.close()
+
+    }
 
     override fun getStreamForID(cifID: CIF_ID): InputStream {
 
@@ -34,7 +83,7 @@ class COD(override val queryMap: Map<CommonQueryTerm, String>) : DBAbstraction {
 
         val cifText = URL("http://www.crystallography.net/cod/${specificResult.cif_ID.id}.cif").readText()
 
-        return CIFDetailedResult(CIFSingleton.parseCIF(cifText))
+        return CIFDetailedResult().populateCIF(specificResult.cif_ID, CIFSingleton.parseCIF(cifText))
 
     }
 

@@ -13,5 +13,6 @@ object Constants {
     // Backend
 
     val CIF_CACHE_FOLDER = "cifcache"
+    val CIF_STORAGE_FOLDER = "cifstorage"
 
 }

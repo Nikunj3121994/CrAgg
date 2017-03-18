@@ -2,6 +2,8 @@ package com.github.decyg.CrAgg.database
 
 import com.github.decyg.CrAgg.database.implementation.COD
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.utils.Constants
+import java.io.File
 import kotlin.reflect.KClass
 
 
@@ -43,7 +45,9 @@ object DBSingleton {
 
                         CommonQueryTerm.SPACE_GROUP to "sg"
 
-                    )
+                    ),
+                    getLocalStorageForSource(COD::class)
+
             )
 
     )
@@ -56,7 +60,7 @@ object DBSingleton {
      * @param source the db source
      * @return the [DBAbstraction] found by that source
      */
-    fun getDBBySource(source : DBSource) : DBAbstraction = datasetMap[source]!!
+    fun getDBBySource(dbSource : DBSource) : DBAbstraction = datasetMap[dbSource]!!
 
     /**
      * Gets a [DBSource] object based off of the name of the implementation class
@@ -66,6 +70,27 @@ object DBSingleton {
      */
     fun getDBSourceByName(dbName : String) : DBSource? = datasetMap.keys.find { it.simpleName == dbName }
 
+    /**
+     * Gets a File representing a local cif storage, in most cases this will just be a folder like cifstorage/COD
+     * this folder contains the entirety of the cifService storage.
+     *
+     * @param dbSource the source db to manage
+     * @return the db folder
+     */
+    fun getLocalStorageForSource(dbSource : DBSource) : File {
+
+        val rootFolder = File(Constants.CIF_STORAGE_FOLDER)
+
+        if(!rootFolder.exists())
+            rootFolder.mkdir()
+
+        val subFolder = File(rootFolder, dbSource.simpleName)
+
+        if(!subFolder.exists())
+            subFolder.mkdir()
+
+        return subFolder
+    }
 
 }
 
