@@ -79,14 +79,14 @@
         <br>
 
         <div class="row">
-            <div class="section col s6 grey lighten-5">
+            <div class="section col s12 grey lighten-5">
                 <h5>JSmol Preview</h5>
                 <script type="text/javascript" th:inline="javascript">
                     /*<![CDATA[*/
                     var cifFile = /*[[@{'/api/downloadResult/' + ${dbSource} + '/' + ${dbID} + '/'}]]*/ '';
 
                     var Info = {
-                        width: 500,
+                        width: 1000,
                         height: 500,
                         color: "0x000000",
                         use: "HTML5",
@@ -100,10 +100,7 @@
                     /*]]>*/
                 </script>
             </div>
-            <div class="section col s6 grey lighten-5">
-                <h5>Graphs</h5>
 
-            </div>
         </div>
 
         <div class="row">
@@ -114,14 +111,14 @@
                     <ul>
                         <li th:each="cifEntry, it : ${detailedCIF.cifResult.dataBlocks}" th:inline="text"
                             th:class="${it.first} ? 'jstree-open'">
-                            [[${cifEntry.key}]]
+                            DataBlock
                             <ul>
                                 <li>Data Items
                                     <ul>
-                                        <li th:each="dataitemEntry : ${cifEntry.value.dataItems}" th:inline="text">
-                                            [[${dataitemEntry.value.tag}]]
+                                        <li th:each="dataitemEntry : ${cifEntry.getDataItems()}" th:inline="text">
+                                            [[${dataitemEntry.key}]]
                                             <ul>
-                                                <li th:text="${dataitemEntry.value.value}"
+                                                <li th:text="${dataitemEntry.value}"
                                                     data-jstree='{"disabled":true}'></li>
                                             </ul>
                                         </li>
@@ -129,7 +126,7 @@
                                 </li>
                                 <li>Looped Data Items
                                     <ul>
-                                        <li th:each="loopedDataItemGroup : ${cifEntry.value.loopedDataItems}"
+                                        <li th:each="loopedDataItemGroup : ${cifEntry.loopedDataItems}"
                                             th:inline="text">
                                             [[${loopedDataItemGroup.keySet()}]]
                                             <ul>
@@ -146,9 +143,9 @@
 
                                                         <tbody>
 
-                                                        <tr th:each="rowI : ${#numbers.sequence(0, loopedDataItemGroup.values()[0].value.size() - 1)}">
+                                                        <tr th:each="rowI : ${#numbers.sequence(0, loopedDataItemGroup.values()[0].size() - 1)}">
                                                             <td th:each="key : ${loopedDataItemGroup.keySet()}"
-                                                                th:text="${loopedDataItemGroup.get(key).value[rowI]}">
+                                                                th:text="${loopedDataItemGroup.get(key)[rowI]}">
                                                                 Item
                                                             </td>
                                                         </tr>
