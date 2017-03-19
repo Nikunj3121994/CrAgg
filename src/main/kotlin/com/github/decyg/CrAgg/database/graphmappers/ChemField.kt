@@ -15,7 +15,7 @@ enum class ChemField(
 
     // Input is of the form Cu, Fe, etc
     CHEMICAL_FORMULA_SUM_HAS_ELEMENT(
-            "Chemical Formula contains Element",
+            "Chemical Formula contains element",
             "Cu",
             "cifResult.dataBlocks.dataItems.chemical_formula_sum",
             { input ->

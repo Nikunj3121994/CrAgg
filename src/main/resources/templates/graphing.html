@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>Crystal Aggregator</title>
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="../static/css/materialize.css" th:href="@{/css/materialize.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="../static/js/materialize.js" th:src="@{/js/materialize.js}"></script>
+    <script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+
+</head>
+
+<body>
+
+<div th:insert="~{elements :: topbar}"></div>
+
+
+<!--/*@thymesVar id="graphOptions" type="com.github.decyg.CrAgg.spring.controllers.DetailedGraphingController.GraphPageModel"*/-->
+<!--/*@thymesVar id="curGraph" type="com.github.decyg.CrAgg.database.graphmappers.ChemGraphs"*/-->
+<!--/*@thymesVar id="graphResultList" type="com.github.decyg.CrAgg.spring.controllers.DetailedGraphingController.GraphResultModel"*/-->
+<!--/*@thymesVar id="graphData" type="java.lang.String"*/-->
+<!--/*@thymesVar id="graphFormat" type="java.lang.String"*/-->
+
+
+<main>
+    <div class="container">
+
+        <br>
+
+        <div class="row">
+            <div class="card-panel light-blue lighten-1">
+                    <span class="white-text">
+                        This is the detailed graphing query system. This allows you to make huge queries on various graph
+                        types to the Crystallographic Open Database.
+                    </span>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="section col s12 grey lighten-5">
+                <h5>Select a graph type</h5>
+                <select onchange="location = this.value">
+                    <option value="" disabled selected>Choose a graph to search on</option>
+                    <option th:each="graph, it : ${graphOptions.graphOptions}" th:text="${graph.name()}"
+                            th:selected="${graph.name() == curGraph.name()}"
+                            th:value="'/graphing/' + ${graph.name()}"></option>
+                </select>
+                <label>Element Selector</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="section col s12 grey lighten-5">
+                <h5>Input your query options:</h5>
+
+                <form id="graphInput" action="#" th:action="'/graphing/' + ${curGraph.name()}" th:object="${graphResultList}" method="post">
+                    <div class="input-field col s3" th:each="termInput, it : ${curGraph.getTermList()}">
+                        <input th:field="*{resultMap[__${it.index}__]}" placeholder="Placeholder"
+                               id="placeholder_id" th:id="${it.index}" type="text"
+                               class="validate" th:placeholder="'e.g. ' + ${termInput.exampleText}">
+                        <label for="placeholder_id" th:for="${it.index}"
+                               th:text="${termInput.prettyName}">Placeholder Entry</label>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div id="submitButton" class="input-field col s12 right-align">
+                    <button class="btn waves-effect waves-light" type="submit" name="action" form="graphInput">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div th:if="${graphData != null}" class="section col s12 grey lighten-5">
+                <div id="graphOutput" style="width:1000px;height:500px;"></div>
+
+                <script th:inline="javascript">
+
+                    /*<![CDATA[*/
+
+                    var data = /*[[${graphData}]]*/ '';
+                    var formatting = /*[[${graphFormat}]]*/ '';
+
+                    var plotEl = $("#graphOutput")[0];
+
+                    Plotly.plot(plotEl, JSON.parse(data), JSON.parse(formatting));
+
+                    /*]]>*/
+                </script>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</main>
+
+<div th:insert="~{elements :: bottombar}"></div>
+
+</body>
+</html>

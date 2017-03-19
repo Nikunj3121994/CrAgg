@@ -1,8 +1,5 @@
 package com.github.decyg.CrAgg
 
-import com.github.decyg.CrAgg.database.graphmappers.ChemField
-import com.github.decyg.CrAgg.database.graphmappers.ChemGraphs
-import com.github.decyg.CrAgg.database.graphmappers.GraphSingleton
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cache.annotation.EnableCaching
@@ -39,16 +36,6 @@ fun main(args: Array<String>) {
             "cifResult.dataBlocks.loopedDataItems.atom_type_symbol",
             "cifResult.dataBlocks.loopedDataItems.atom_type_oxidation_number"
     ))).first()["cifResult"])**/
-
-    val testOut = GraphSingleton.processGraphToClientJson(ChemGraphs.BASIC_RATIO, listOf(
-            Pair(ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT, "C"),
-            Pair(ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT, "O"),
-            Pair(ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT, ""),
-            Pair(ChemField.CHEMICAL_FORMULA_SUM_HAS_N_ELEMENTS, "3")
-
-    ))
-
-    println()
 
 
     //"{cifResult.dataBlocks.dataItems.chemical_formula_sum: {$regex : \"Ca\\d*\"}}"

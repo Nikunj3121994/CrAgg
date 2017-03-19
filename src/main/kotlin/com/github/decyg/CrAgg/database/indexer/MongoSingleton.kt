@@ -48,14 +48,12 @@ object MongoSingleton {
             }
 
 
-
             try {
                 if(fileText != "") {
 
                     if(cifFile != null)
 
                         mongoCol.insertOne(Document.parse(jacksonObjectMapper().writeValueAsString(CIFDetailedResult().populateCIF(id, CIFSingleton.parseCIF(fileText)))))
-
 
                         println("success $cifFile")
 

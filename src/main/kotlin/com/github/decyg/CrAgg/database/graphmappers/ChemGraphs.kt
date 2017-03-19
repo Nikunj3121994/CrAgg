@@ -10,7 +10,7 @@ import org.bson.Document
 
 /**
  * This is an enum that encapsulates a "graph" from beginning to end on the client view. The termlist dictates
- * what terms to be used as input fields,
+ * what terms to be used as input fields. Depending on how detailed these graphs get it may need to be pulled out to its own file
  */
 enum class ChemGraphs(
         val termList : List<ChemField>,
@@ -42,12 +42,14 @@ enum class ChemGraphs(
 
                 doc.forEach {
 
+                    val stringID = it.getString("stringifiedID")
 
                     val spaceGroup = it
                             .get("cifResult", Document::class.java)
                             .get("dataBlocks", List::class.java)[0].let { it as Document }
                             .get("dataItems", Document::class.java)
                             .getString("symmetry_space_group_name_H-M")
+                            .trim()
 
                     val chemFormula = it
                             .get("cifResult", Document::class.java)
@@ -59,14 +61,25 @@ enum class ChemGraphs(
                     if(!traceMap.containsKey(spaceGroup)) // x, y, text
                         traceMap[spaceGroup] = Triple(mutableListOf(), mutableListOf(), mutableListOf())
 
-                    val xMatch = "$xElement(\\d+)".toRegex().find(chemFormula)
-                    val xCount : String = if(xMatch == null) "1" else xMatch.groups[1]!!.value
-                    val yMatch = "$yElement(\\d+)".toRegex().find(chemFormula)
-                    val yCount : String = if(yMatch == null) "1" else yMatch.groups[1]!!.value
+                    var runTotal : Double = 0.0
 
-                    traceMap[spaceGroup]!!.first.add(xCount)
-                    traceMap[spaceGroup]!!.second.add(yCount)
-                    traceMap[spaceGroup]!!.third.add(chemFormula)
+                    val countReg = "[a-zA-Z]+(\\d*)".toRegex()
+                    countReg.findAll(chemFormula).forEach {
+                        if(it.groups[1] != null){
+                            runTotal += it.groups[1]!!.value.toDoubleOrNull() ?: 1.0
+                        } else {
+                            runTotal += 1
+                        }
+                    }
+
+                    val xMatch = "$xElement(\\d+)".toRegex().find(chemFormula)
+                    val xCount : Double = if(xMatch == null) 1.0 else xMatch.groups[1]!!.value.toDouble()
+                    val yMatch = "$yElement(\\d+)".toRegex().find(chemFormula)
+                    val yCount : Double = if(yMatch == null) 1.0 else yMatch.groups[1]!!.value.toDouble()
+
+                    traceMap[spaceGroup]!!.first.add((xCount / runTotal).toString())
+                    traceMap[spaceGroup]!!.second.add((yCount / runTotal).toString())
+                    traceMap[spaceGroup]!!.third.add("$stringID<br>$chemFormula")
 
                 }
 
@@ -84,13 +97,14 @@ enum class ChemGraphs(
                 }
 
                 val layout : JsonObject = jsonObject(
-                        "title" to "test",
+                        "title" to "Results of ${res.toString().replace("), (", "<br>")}",
                         "xaxis" to jsonObject(
-                                "title" to xElement
+                                "title" to "Ratio of $xElement atoms to total number of atoms"
                         ),
                         "yaxis" to jsonObject(
-                                "title" to yElement
-                        )
+                                "title" to "Ratio of $yElement atoms to total number of atoms"
+                        ),
+                        "paper_bgcolor" to "rgba(250,250,250,0)"
                 )
 
                 Pair(outData.toString(), layout.toString())
