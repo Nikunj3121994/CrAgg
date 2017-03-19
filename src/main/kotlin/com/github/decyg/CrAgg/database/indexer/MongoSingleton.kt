@@ -1,24 +1,27 @@
 package com.github.decyg.CrAgg.database.indexer
 
-import com.github.decyg.CrAgg.SpringRunner.Companion.cifService
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
-import org.springframework.stereotype.Component
+import com.mongodb.MongoClient
+import org.bson.Document
+
 import java.io.File
 import java.util.concurrent.Executors
 
 /**
- * This is a singleton to manage interfacing with the ElasticSearch API for cifService specific stuff
+ * This is a singleton to manage interfacing with the MongoDB API for CIF specific things
  */
-@Component
-object ElasticSingleton {
+object MongoSingleton {
 
 
     val tPool = Executors.newCachedThreadPool()!!
 
-
+    val mongoClient = MongoClient()
+    val mongoDB = mongoClient.getDatabase("CrAgg")
+    val mongoCol = mongoDB.getCollection("cifdetailedresult")
 
 
     /**
@@ -32,35 +35,32 @@ object ElasticSingleton {
 
         tPool.execute {
 
-            var cifFile : File
+            var cifFile : File? = null
+            var fileText : String = ""
 
-            while (true){
+            while (fileText == ""){
                 try {
                     cifFile = File("${DBSingleton.getLocalStorageForSource(id.db).path}\\$inFile")
 
-                    if (cifFile.exists())
-                        break
+                    fileText = cifFile.readText()
                 } catch (e : Exception){ }
-                Thread.sleep(2)
+                Thread.sleep(10)
             }
 
-            println("elastic: $cifFile")
 
 
-            val fileText = cifFile.readText()
             try {
+                if(fileText != "") {
 
-                cifService.save(CIFDetailedResult().populateCIF(id, CIFSingleton.parseCIF(fileText)))
+                    if(cifFile != null)
 
-                /** val cif = jacksonObjectMapper().writeValueAsString(CIFDetailedResult(CIFSingleton.parseCIF(fileText)))
-
-                val resp = ecTransport.prepareIndex(source.simpleName!!.toLowerCase(), "cifService")
-                        .setSource(cif)
-                        .get()
+                        mongoCol.insertOne(Document.parse(jacksonObjectMapper().writeValueAsString(CIFDetailedResult().populateCIF(id, CIFSingleton.parseCIF(fileText)))))
 
 
-                println(resp)
-                 **/
+                        println("success $cifFile")
+
+                }
+
             } catch (ex : CIFSingleton.ParseException){
                 // Need to log failed parses
                 //println(ex)

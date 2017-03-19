@@ -96,10 +96,32 @@
 
     <dependencies>
 
-        <!-- ElasticSearch -->
+        <!-- Gson & Kotson -->
+        <!--
+            Note, i am aware that jackson is already on the classpath and i have been using it
+            but there doesn't seem to be any good jackson DSL's so i'm using this to create
+            json programatically without loads of pojos.
+        -->
 
-        <!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.github.salomonbrys.kotson</groupId>
+            <artifactId>kotson</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <!-- MongoDB -->
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver</artifactId>
+            <version>3.4.2</version>
+        </dependency>
 
         <!-- Kwery & MySQL -->
 
@@ -139,11 +161,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
         <dependency>

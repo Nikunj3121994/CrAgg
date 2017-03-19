@@ -7,7 +7,7 @@ import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
 import com.github.decyg.CrAgg.database.DBAbstraction
-import com.github.decyg.CrAgg.database.indexer.ElasticSingleton
+import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
@@ -61,7 +61,7 @@ class COD(
                 val matcher = idFound.matcher(line)
 
                 if(matcher.find()){
-                    ElasticSingleton.updateIndexForFile(CIF_ID(this::class, matcher.group(1)), line.replace('/', '\\'))
+                    MongoSingleton.updateIndexForFile(CIF_ID(this::class, matcher.group(1)), line.replace('/', '\\'))
                 }
 
             } else {
