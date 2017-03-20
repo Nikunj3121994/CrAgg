@@ -1,7 +1,8 @@
 package com.github.decyg.CrAgg.database
 
-import com.github.decyg.CrAgg.database.implementation.COD
+import com.github.decyg.CrAgg.database.slowdb.implementation.COD
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.database.slowdb.DBAbstraction
 import com.github.decyg.CrAgg.utils.Constants
 import java.io.File
 import kotlin.reflect.KClass

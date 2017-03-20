@@ -1,7 +1,7 @@
 package com.github.decyg.CrAgg.database.query.enums
 
 import com.github.decyg.CrAgg.database.DBSource
-import com.github.decyg.CrAgg.database.implementation.COD
+import com.github.decyg.CrAgg.database.slowdb.implementation.COD
 
 /**
  * Defines Quantifier objects and their translations for each data source. I could have made this more generic

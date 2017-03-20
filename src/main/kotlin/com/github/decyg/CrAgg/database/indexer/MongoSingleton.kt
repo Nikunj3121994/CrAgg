@@ -47,7 +47,6 @@ object MongoSingleton {
                 Thread.sleep(10)
             }
 
-
             try {
                 if(fileText != "") {
 

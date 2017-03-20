@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.database
+package com.github.decyg.CrAgg.database.slowdb
 
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult

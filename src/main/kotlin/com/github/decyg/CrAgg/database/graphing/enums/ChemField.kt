@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.database.graphmappers
+package com.github.decyg.CrAgg.database.graphing.enums
 
 import com.mongodb.client.model.Filters.regex
 import org.bson.conversions.Bson

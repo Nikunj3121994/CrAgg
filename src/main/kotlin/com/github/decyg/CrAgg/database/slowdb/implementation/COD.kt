@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.database.implementation
+package com.github.decyg.CrAgg.database.slowdb.implementation
 
 import com.github.andrewoma.kwery.core.DefaultSession
 import com.github.andrewoma.kwery.core.dialect.MysqlDialect
@@ -6,7 +6,7 @@ import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.results.CIFBriefResult
 import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.results.CIF_ID
-import com.github.decyg.CrAgg.database.DBAbstraction
+import com.github.decyg.CrAgg.database.slowdb.DBAbstraction
 import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType

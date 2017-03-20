@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.database.graphmappers
+package com.github.decyg.CrAgg.database.graphing.enums
 
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject

@@ -1,5 +1,7 @@
-package com.github.decyg.CrAgg.database.graphmappers
+package com.github.decyg.CrAgg.database.graphing
 
+import com.github.decyg.CrAgg.database.graphing.enums.ChemField
+import com.github.decyg.CrAgg.database.graphing.enums.ChemGraphs
 import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.mongodb.client.model.Filters.*
 import com.mongodb.client.model.Projections.fields

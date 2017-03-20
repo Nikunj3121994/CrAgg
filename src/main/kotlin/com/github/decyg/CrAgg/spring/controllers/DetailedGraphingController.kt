@@ -1,8 +1,8 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.database.graphmappers.ChemField
-import com.github.decyg.CrAgg.database.graphmappers.ChemGraphs
-import com.github.decyg.CrAgg.database.graphmappers.GraphSingleton
+import com.github.decyg.CrAgg.database.graphing.enums.ChemField
+import com.github.decyg.CrAgg.database.graphing.enums.ChemGraphs
+import com.github.decyg.CrAgg.database.graphing.GraphSingleton
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute
