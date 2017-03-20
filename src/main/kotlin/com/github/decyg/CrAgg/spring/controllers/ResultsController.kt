@@ -2,7 +2,7 @@ package com.github.decyg.CrAgg.spring.controllers
 
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
-import com.github.decyg.CrAgg.utils.Constants
+import com.github.decyg.CrAgg.utils.GeneralConstants
 import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Service
 import org.springframework.ui.Model
@@ -38,7 +38,7 @@ open class ResultsController {
         val briefResModel = resultModel.toBriefResultsModel()
 
         pageModel.addAttribute("pageNum", pageNum ?: 1)
-        pageModel.addAttribute("totalNumResults", briefResModel.briefResults.size / Constants.RESULTS_PER_PAGE)
+        pageModel.addAttribute("totalNumResults", briefResModel.briefResults.size / GeneralConstants.RESULTS_PER_PAGE)
         pageModel.addAttribute("totalMaxResults", briefResModel.briefResults.size)
         pageModel.addAttribute("briefResultModel", briefResModel.paginate())
         pageModel.addAttribute("starredModel", StarredController.getStarredResults(session))
@@ -63,7 +63,7 @@ open class ResultsController {
         if(session.getAttribute("briefResultModel") == null || session.getAttribute("resultList") == null)
             return "index"
 
-        val maxPages = Constants.TOTAL_RESULTS / Constants.RESULTS_PER_PAGE
+        val maxPages = GeneralConstants.TOTAL_RESULTS / GeneralConstants.RESULTS_PER_PAGE
         val minPages = 1
 
         val limitedPage = pageNum.coerceIn(minPages, maxPages)
@@ -71,7 +71,7 @@ open class ResultsController {
         val resModel : BriefResultsModel = session.getAttribute("briefResultModel") as BriefResultsModel
 
         pageModel.addAttribute("pageNum", limitedPage)
-        pageModel.addAttribute("totalNumResults", resModel.briefResults.size / Constants.RESULTS_PER_PAGE)
+        pageModel.addAttribute("totalNumResults", resModel.briefResults.size / GeneralConstants.RESULTS_PER_PAGE)
         pageModel.addAttribute("totalMaxResults", resModel.briefResults.size)
         pageModel.addAttribute("briefResultModel", resModel.paginate(limitedPage))
         pageModel.addAttribute("starredModel", StarredController.getStarredResults(session))

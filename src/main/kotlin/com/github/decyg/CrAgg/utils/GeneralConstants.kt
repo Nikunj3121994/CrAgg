@@ -3,7 +3,7 @@ package com.github.decyg.CrAgg.utils
 /**
  * Basic constants singleton for use with the Spring controllers mainly.
  */
-object Constants {
+object GeneralConstants {
 
     // Frontend
 
@@ -14,5 +14,10 @@ object Constants {
 
     val CIF_CACHE_FOLDER = "cifcache"
     val CIF_STORAGE_FOLDER = "cifstorage"
+
+    // Mongo
+
+    val MONGODB_NAME = "CrAgg"
+    val MONGODB_COLLECTION = "cifdetailedresult"
 
 }

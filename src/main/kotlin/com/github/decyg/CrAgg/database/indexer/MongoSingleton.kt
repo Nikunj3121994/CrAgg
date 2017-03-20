@@ -1,13 +1,21 @@
 package com.github.decyg.CrAgg.database.indexer
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.DeserializationConfig
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.github.decyg.CrAgg.cif.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
-import com.github.decyg.CrAgg.cif.results.CIF_ID
+import com.github.decyg.CrAgg.cif.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
+import com.github.decyg.CrAgg.utils.GeneralConstants
 import com.mongodb.MongoClient
-import org.bson.Document
-
+import com.mongodb.MongoClientOptions
+import com.mongodb.ServerAddress
+import com.mongodb.client.MongoCollection
+import com.mongodb.client.MongoDatabase
+import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider
+import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory
+import org.bson.codecs.configuration.CodecRegistries
+import org.bson.codecs.configuration.CodecRegistry
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -19,9 +27,23 @@ object MongoSingleton {
 
     val tPool = Executors.newCachedThreadPool()!!
 
-    val mongoClient = MongoClient()
-    val mongoDB = mongoClient.getDatabase("CrAgg")
-    val mongoCol = mongoDB.getCollection("cifdetailedresult")
+    val jacksonObjMapper = ObjectMapperFactory.createObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+
+    val mongoCodecRegistry : CodecRegistry = CodecRegistries.fromRegistries(
+            MongoClient.getDefaultCodecRegistry(),
+            CodecRegistries.fromProviders(
+                    JacksonCodecProvider(jacksonObjMapper)
+            )
+    )
+    val mongoOptions : MongoClientOptions = MongoClientOptions.builder()
+            .codecRegistry(mongoCodecRegistry)
+            .build()
+
+
+    val mongoClient = MongoClient(ServerAddress(), mongoOptions)
+    val mongoDB : MongoDatabase = mongoClient.getDatabase(GeneralConstants.MONGODB_NAME)
+    val mongoCol : MongoCollection<CIFDetailedResult> = mongoDB.getCollection(GeneralConstants.MONGODB_COLLECTION, CIFDetailedResult::class.java)
 
 
     /**
@@ -52,7 +74,7 @@ object MongoSingleton {
 
                     if(cifFile != null)
 
-                        mongoCol.insertOne(Document.parse(jacksonObjectMapper().writeValueAsString(CIFDetailedResult().populateCIF(id, CIFSingleton.parseCIF(fileText)))))
+                        mongoCol.insertOne(CIFSingleton.getPopulatedCIF(id, CIFSingleton.parseCIF(fileText)))
 
                         println("success $cifFile")
 

@@ -2,17 +2,17 @@ package com.github.decyg.CrAgg.database.slowdb.implementation
 
 import com.github.andrewoma.kwery.core.DefaultSession
 import com.github.andrewoma.kwery.core.dialect.MysqlDialect
+import com.github.decyg.CrAgg.cif.CIFBriefResult
+import com.github.decyg.CrAgg.cif.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.cif.results.CIFBriefResult
-import com.github.decyg.CrAgg.cif.results.CIFDetailedResult
-import com.github.decyg.CrAgg.cif.results.CIF_ID
-import com.github.decyg.CrAgg.database.slowdb.DBAbstraction
+import com.github.decyg.CrAgg.cif.CIF_ID
 import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
-import com.github.decyg.CrAgg.utils.Constants
+import com.github.decyg.CrAgg.database.slowdb.DBAbstraction
+import com.github.decyg.CrAgg.utils.GeneralConstants
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStream
@@ -83,7 +83,7 @@ class COD(
 
         val cifText = URL("http://www.crystallography.net/cod/${specificResult.cif_ID.id}.cif").readText()
 
-        return CIFDetailedResult().populateCIF(specificResult.cif_ID, CIFSingleton.parseCIF(cifText))
+        return CIFSingleton.getPopulatedCIF(specificResult.cif_ID, CIFSingleton.parseCIF(cifText))
 
     }
 
@@ -96,7 +96,7 @@ class COD(
 
         val curSession = DefaultSession(con, MysqlDialect())
 
-        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT ${Constants.TOTAL_RESULTS}"
+        val sql = "SELECT * FROM data WHERE ${queryExpressionToSQL(query)} LIMIT ${GeneralConstants.TOTAL_RESULTS}"
 
         val dataResults = curSession.select(sql) { row ->
 

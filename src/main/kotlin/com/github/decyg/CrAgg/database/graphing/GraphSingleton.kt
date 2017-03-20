@@ -35,4 +35,5 @@ object GraphSingleton {
 
         return graphEnum.documentToJson(termInputsSanitised, MongoSingleton.mongoCol.find(searchBson).projection(projectionBson))
     }
+
 }

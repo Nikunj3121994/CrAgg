@@ -41,7 +41,7 @@ data class OR(val leftExp : Expression, val rightExp : Expression) : Expression
 
 data class NOT(val expression : Expression) : Expression
 
-class TERM(
+data class TERM(
         val key : CommonQueryTerm,
         val quantifier : QueryQuantifier,
         val textTerm : String = "",

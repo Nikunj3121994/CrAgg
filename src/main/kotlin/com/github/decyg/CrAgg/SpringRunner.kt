@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
 
     /*println(jacksonObjectMapper().writeValueAsString(
-            CIFDetailedResult().populateCIF(
+            CIFDetailedResult().getPopulatedCIF(
                     CIF_ID("COD", "22"),
                     CIFSingleton.parseCIF(
                             File("cifcache/COD-1517271.cif").readText()

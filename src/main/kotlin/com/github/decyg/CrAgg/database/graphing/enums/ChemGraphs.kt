@@ -1,12 +1,12 @@
 package com.github.decyg.CrAgg.database.graphing.enums
 
+import com.github.decyg.CrAgg.cif.CIFDetailedResult
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mongodb.client.FindIterable
-import org.bson.Document
 
 /**
  * This is an enum that encapsulates a "graph" from beginning to end on the client view. The termlist dictates
@@ -15,7 +15,7 @@ import org.bson.Document
 enum class ChemGraphs(
         val termList : List<ChemField>,
         val projectionKeys : List<String>,
-        val documentToJson : (List<Pair<ChemField, String>>, FindIterable<Document>) -> Pair<String, String>
+        val documentToJson : (List<Pair<ChemField, String>>, FindIterable<CIFDetailedResult>) -> Pair<String, String>
 ) {
 
     BASIC_RATIO(
@@ -39,24 +39,11 @@ enum class ChemGraphs(
                 val xElement = res[0].second
                 val yElement = res[1].second
 
-
                 doc.forEach {
 
-                    val stringID = it.getString("stringifiedID")
-
-                    val spaceGroup = it
-                            .get("cifResult", Document::class.java)
-                            .get("dataBlocks", List::class.java)[0].let { it as Document }
-                            .get("dataItems", Document::class.java)
-                            .getString("symmetry_space_group_name_H-M")
-                            .trim()
-
-                    val chemFormula = it
-                            .get("cifResult", Document::class.java)
-                            .get("dataBlocks", List::class.java)[0].let { it as Document }
-                            .get("dataItems", Document::class.java)
-                            .getString("chemical_formula_sum")
-
+                    val stringID = it.stringifiedID
+                    val spaceGroup = it.cifResult.dataBlocks[0].dataItems["symmetry_space_group_name_H-M"]?.trim() ?: ""
+                    val chemFormula = it.cifResult.dataBlocks[0].dataItems["chemical_formula_sum"] ?: ""
 
                     if(!traceMap.containsKey(spaceGroup)) // x, y, text
                         traceMap[spaceGroup] = Triple(mutableListOf(), mutableListOf(), mutableListOf())

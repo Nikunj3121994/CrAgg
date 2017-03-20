@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.spring.models
 
-import com.github.decyg.CrAgg.cif.results.CIFBriefResult
+import com.github.decyg.CrAgg.cif.CIFBriefResult
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.database.DBSource
 import com.github.decyg.CrAgg.database.query.AND

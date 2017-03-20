@@ -1,9 +1,9 @@
 package com.github.decyg.CrAgg.database
 
-import com.github.decyg.CrAgg.database.slowdb.implementation.COD
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.slowdb.DBAbstraction
-import com.github.decyg.CrAgg.utils.Constants
+import com.github.decyg.CrAgg.database.slowdb.implementation.COD
+import com.github.decyg.CrAgg.utils.GeneralConstants
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -80,7 +80,7 @@ object DBSingleton {
      */
     fun getLocalStorageForSource(dbSource : DBSource) : File {
 
-        val rootFolder = File(Constants.CIF_STORAGE_FOLDER)
+        val rootFolder = File(GeneralConstants.CIF_STORAGE_FOLDER)
 
         if(!rootFolder.exists())
             rootFolder.mkdir()

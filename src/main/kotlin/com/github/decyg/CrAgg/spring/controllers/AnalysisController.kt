@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.spring.controllers
 
-import com.github.decyg.CrAgg.cif.results.CIF_ID
+import com.github.decyg.CrAgg.cif.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.TERM

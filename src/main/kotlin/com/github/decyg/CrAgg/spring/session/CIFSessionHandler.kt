@@ -1,8 +1,8 @@
 package com.github.decyg.CrAgg.spring.session
 
-import com.github.decyg.CrAgg.cif.results.CIF_ID
+import com.github.decyg.CrAgg.cif.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.utils.Constants
+import com.github.decyg.CrAgg.utils.GeneralConstants
 import java.io.File
 
 /**
@@ -10,7 +10,7 @@ import java.io.File
  */
 object CIFSessionHandler {
 
-    val cacheFolder = File(Constants.CIF_CACHE_FOLDER)
+    val cacheFolder = File(GeneralConstants.CIF_CACHE_FOLDER)
 
     init {
 
