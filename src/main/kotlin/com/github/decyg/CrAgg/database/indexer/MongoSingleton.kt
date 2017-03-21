@@ -1,9 +1,8 @@
 package com.github.decyg.CrAgg.database.indexer
 
-import com.fasterxml.jackson.databind.DeserializationConfig
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
+import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.utils.GeneralConstants
@@ -55,14 +54,14 @@ object MongoSingleton {
         if(!inFile.endsWith("cif"))
             return
 
-        tPool.execute {
+        tPool.execute body@{
 
             var cifFile : File? = null
             var fileText : String = ""
 
             while (fileText == ""){
                 try {
-                    cifFile = File("${DBSingleton.getLocalStorageForSource(id.db).path}\\$inFile")
+                    cifFile = File("${DBSingleton.getLocalStorageForSource(id.asDBSource()).path}\\$inFile")
 
                     fileText = cifFile.readText()
                 } catch (e : Exception){ }

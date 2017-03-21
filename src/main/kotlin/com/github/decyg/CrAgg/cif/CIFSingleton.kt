@@ -17,7 +17,7 @@ object CIFSingleton {
     /**
      * Wrapper for the parse exception.
      */
-    class ParseException(message: String?) : Throwable(message)
+    class ParseException(message: String?) : Exception(message)
 
     // The Parboiled parser object
     val pParser : CIFParser = Parboiled.createParser(CIFParser::class.java)

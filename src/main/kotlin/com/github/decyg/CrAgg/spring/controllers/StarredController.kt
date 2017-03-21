@@ -3,10 +3,10 @@ package com.github.decyg.CrAgg.spring.controllers
 import com.github.decyg.CrAgg.cif.parser.CIFBriefResult
 import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
-import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.QueryExpression
-import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.database.query.TERM
+import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
+import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
 import com.github.decyg.CrAgg.spring.session.CIFSessionHandler
@@ -61,7 +61,7 @@ open class StarredController {
 
         fun addStarredResult(cif_ID: CIF_ID, session: HttpSession) : Boolean {
 
-            val briefResList = DBSingleton.getDBBySource(cif_ID.db).queryDatabase(
+            val briefResList = DBSingleton.getDBBySource(cif_ID.asDBSource()).queryDatabase(
                     QueryExpression(
                             TERM(CommonQueryTerm.ID, QueryQuantifier.IS_EXACT, cif_ID.id)
                     )
@@ -92,7 +92,7 @@ open class StarredController {
 
         fun removeStarredResult(cif_ID: CIF_ID, session: HttpSession) : Boolean {
 
-            val briefResList = DBSingleton.getDBBySource(cif_ID.db).queryDatabase(
+            val briefResList = DBSingleton.getDBBySource(cif_ID.asDBSource()).queryDatabase(
                     QueryExpression(
                             TERM(CommonQueryTerm.ID, QueryQuantifier.IS_EXACT, cif_ID.id)
                     )

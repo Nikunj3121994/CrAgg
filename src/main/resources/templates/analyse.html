@@ -63,7 +63,7 @@
                     <option value="" disabled selected>Choose a starred result to focus on</option>
                     <option th:each="res, it : ${starredModel.briefResults}" th:text="${res.cif_ID}"
                             th:selected="${res.cif_ID == curCIFID}"
-                            th:value="'/analyse/' + ${res.cif_ID.db.simpleName} + '/' + ${res.cif_ID.id}"></option>
+                            th:value="'/analyse/' + ${res.cif_ID.db} + '/' + ${res.cif_ID.id}"></option>
                 </select>
                 <label>Element Selector</label>
             </div>

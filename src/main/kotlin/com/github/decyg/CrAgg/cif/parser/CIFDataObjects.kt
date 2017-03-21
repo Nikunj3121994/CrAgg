@@ -11,19 +11,14 @@ import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
  * @property db The database source as a [DBSource] object or a [String] which gets converted automatically
  * @property id The id of the entry
  */
-data class CIF_ID(val db : DBSource, val id : String){
-    /**
-     * Identical to the primary constructor except it takes a [String] as the db object and uses the [DBSingleton]
-     * to convert it into a [DBSource] object
-     */
-    constructor(db : String, id : String) : this(
-            DBSingleton.getDBSourceByName(db)!!,
-            id
-    )
+data class CIF_ID(val db : String, val id : String){
+
+    fun asDBSource() : DBSource = DBSingleton.getDBSourceByName(db)!!
 
     override fun toString(): String {
-        return "${db.simpleName} : $id"
+        return "$db : $id"
     }
+
 }
 
 /**

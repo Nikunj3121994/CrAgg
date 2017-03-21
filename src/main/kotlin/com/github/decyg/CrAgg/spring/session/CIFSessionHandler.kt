@@ -27,7 +27,7 @@ object CIFSessionHandler {
      * @param cif_ID the id to get
      * @return the file represented by the cif id
      */
-    private fun idAsFile(cif_ID: CIF_ID) = File(cacheFolder, "${cif_ID.db.simpleName}-${cif_ID.id}.cif")
+    private fun idAsFile(cif_ID: CIF_ID) = File(cacheFolder, "${cif_ID.db}-${cif_ID.id}.cif")
 
     // External
 
@@ -40,7 +40,7 @@ object CIFSessionHandler {
         synchronized(this, {
             if(!cacheHasCIF(cif_ID)){
                 val cifFileOut = idAsFile(cif_ID).outputStream()
-                val cifFileIn = DBSingleton.getDBBySource(cif_ID.db).getStreamForID(cif_ID)
+                val cifFileIn = DBSingleton.getDBBySource(cif_ID.asDBSource()).getStreamForID(cif_ID)
 
                 cifFileIn.copyTo(cifFileOut)
 

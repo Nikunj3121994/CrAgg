@@ -1,0 +1,29 @@
+#------------------------------------------------------------------------------
+#$Date: 2016-02-14 16:26:36 +0200 (Sun, 14 Feb 2016) $
+#$Revision: 176435 $
+#$URL: svn://www.crystallography.net/cod/cif/1/00/00/1000091.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1000091
+loop_
+_publ_author_name
+'Laval, J P'
+'Abaouz, A'
+'Frit, B'
+'Le Bail, A'
+_publ_section_title
+;
+Short-range order in the anion-excess fluorite-related
+Ca~0.68~Ln~0.32~F~2.32~ solid solutions: EXAFS study of the Ln^3+^
+environment
+;
+_journal_coden_ASTM              JSSCBI
+_journal_n
+
+the file has been cut off here

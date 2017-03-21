@@ -46,14 +46,14 @@ open class AnalysisController {
 
         val starredModel = StarredController.getStarredResults(session)
 
-        val briefResList = DBSingleton.getDBBySource(cif_ID.db).queryDatabase(
+        val briefResList = DBSingleton.getDBBySource(cif_ID.asDBSource()).queryDatabase(
                 QueryExpression(
                         TERM(CommonQueryTerm.ID, QueryQuantifier.IS_EXACT, cif_ID.id)
                 )
         )
 
         if(briefResList.size == 1){
-            val detailedModel = DBSingleton.getDBBySource(cif_ID.db).queryDatabaseSpecific(briefResList[0])
+            val detailedModel = DBSingleton.getDBBySource(cif_ID.asDBSource()).queryDatabaseSpecific(briefResList[0])
             pageModel.addAttribute("briefCIF", briefResList[0])
             pageModel.addAttribute("detailedCIF", detailedModel)
         }

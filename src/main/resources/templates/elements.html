@@ -65,7 +65,7 @@
         <h5 class="col s10 left-align" th:text="${item.cif_ID.toString()}">Header</h5>
 
         <p class="col s2 right-align">
-            <input type="checkbox" id="id" th:attr="data-db=${item.cif_ID.db.simpleName},data-id=${item.cif_ID.id}" th:id="${item.cif_ID}"/>
+            <input type="checkbox" id="id" th:attr="data-db=${item.cif_ID.db},data-id=${item.cif_ID.id}" th:id="${item.cif_ID}"/>
             <label for="id" th:for="${item.cif_ID}">Select</label>
         </p>
 
@@ -119,7 +119,7 @@
         <div class="col s3 left-align">
 
             <a class="waves-effect waves-light btn"
-               th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'">
+               th:onclick="'toggleResultStarred(this, \'' + ${item.cif_ID.db} + '\',\'' + ${item.cif_ID.id} + '\');'">
 
                 <i th:text="${starredModel.briefResults.contains(item) ? 'star' : 'star_border'}"
                    class="material-icons left">star_border</i>
@@ -135,14 +135,14 @@
                 <span>more details</span>
             </a>
             <a class="waves-effect waves-light btn"
-               th:href="@{'/api/downloadResult/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+               th:href="@{'/api/downloadResult/' + ${item.cif_ID.db} + '/' + ${item.cif_ID.id}}">
                 <i class="material-icons right">file_download</i>
                 <span>download</span>
             </a>
 
             <a class="waves-effect waves-light btn"
-               th:onclick="'starResult(this, \'' + ${item.cif_ID.db.simpleName} + '\',\'' + ${item.cif_ID.id} + '\');'"
-               th:href="@{'/analyse/' + ${item.cif_ID.db.simpleName} + '/' + ${item.cif_ID.id}}">
+               th:onclick="'starResult(this, \'' + ${item.cif_ID.db} + '\',\'' + ${item.cif_ID.id} + '\');'"
+               th:href="@{'/analyse/' + ${item.cif_ID.db} + '/' + ${item.cif_ID.id}}">
                 <i class="material-icons right">play_arrow</i>
                 <span>analyse</span>
             </a>

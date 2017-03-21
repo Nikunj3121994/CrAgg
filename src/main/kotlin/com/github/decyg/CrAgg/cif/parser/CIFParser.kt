@@ -99,16 +99,16 @@ open class CIFParser : BaseParser<CIFParser.Companion.CIFNode>() {
     open fun DataItems_Node() : Rule {
         return FirstOf(
                 Sequence(
-                        LoopHeader(),
-                        WhiteSpace(),
-                        LoopBody(),
-                        push(CIFNode("LoopedDataItem", pop(1), pop()))
-                ),
-                Sequence(
                         Tag(),
                         WhiteSpace(),
                         Value(),
                         push(CIFNode("DataItem", pop(1), pop()))
+                ),
+                Sequence(
+                        LoopHeader(),
+                        WhiteSpace(),
+                        LoopBody(),
+                        push(CIFNode("LoopedDataItem", pop(1), pop()))
                 )
 
         )

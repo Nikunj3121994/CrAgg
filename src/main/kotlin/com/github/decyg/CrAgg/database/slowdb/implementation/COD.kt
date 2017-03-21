@@ -2,9 +2,9 @@ package com.github.decyg.CrAgg.database.slowdb.implementation
 
 import com.github.andrewoma.kwery.core.DefaultSession
 import com.github.andrewoma.kwery.core.dialect.MysqlDialect
+import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.parser.CIFBriefResult
 import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
-import com.github.decyg.CrAgg.cif.CIFSingleton
 import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.github.decyg.CrAgg.database.query.*
@@ -61,7 +61,7 @@ class COD(
                 val matcher = idFound.matcher(line)
 
                 if(matcher.find()){
-                    MongoSingleton.updateIndexForFile(CIF_ID(this::class, matcher.group(1)), line.replace('/', '\\'))
+                    MongoSingleton.updateIndexForFile(CIF_ID(this::class.simpleName!!, matcher.group(1)), line.replace('/', '\\'))
                 }
 
             } else {
@@ -113,7 +113,7 @@ class COD(
             }
 
             CIFBriefResult(
-                    CIF_ID(this::class, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
+                    CIF_ID(this::class.simpleName!!, row.int(queryMap[CommonQueryTerm.ID]!!).toString()),
                     outMap
 
             )
