@@ -1,8 +1,8 @@
 package com.github.decyg.CrAgg.spring.controllers.rest
 
 import com.github.decyg.CrAgg.cif.parser.CIF_ID
+import com.github.decyg.CrAgg.database.slowdb.CIFSessionHandler
 import com.github.decyg.CrAgg.spring.controllers.StarredController
-import com.github.decyg.CrAgg.spring.session.CIFSessionHandler
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus

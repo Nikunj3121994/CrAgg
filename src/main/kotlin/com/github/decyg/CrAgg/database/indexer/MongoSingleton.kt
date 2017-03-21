@@ -47,7 +47,10 @@ object MongoSingleton {
 
     /**
      * Takes in a [File] object referring to a new locally stored cif entry, reads it, turns it into json by encoding
-     * a CIFDetailedResult object
+     * a CIFDetailedResult object. This is a work in progress function and needs redoing
+     *
+     * @param id the id of the item to index
+     * @param inFile the path of the file to get
      */
     fun updateIndexForFile(id : CIF_ID, inFile : String){
 

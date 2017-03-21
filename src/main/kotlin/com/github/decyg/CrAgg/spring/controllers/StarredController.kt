@@ -7,9 +7,9 @@ import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.TERM
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import com.github.decyg.CrAgg.database.query.enums.QueryQuantifier
+import com.github.decyg.CrAgg.database.slowdb.CIFSessionHandler
 import com.github.decyg.CrAgg.spring.models.BriefResultsModel
 import com.github.decyg.CrAgg.spring.models.SearchResultModel
-import com.github.decyg.CrAgg.spring.session.CIFSessionHandler
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -109,7 +109,7 @@ open class StarredController {
             val starredResults = session.getAttribute("starredResults") as MutableList<CIFBriefResult>
 
             if (starredResults.contains(res)) {
-                starredResults.add(res)
+                starredResults.remove(res)
 
                 if(CIFSessionHandler.cacheHasCIF(cif_ID)) {
                     CIFSessionHandler.removeCIFFromCache(cif_ID)

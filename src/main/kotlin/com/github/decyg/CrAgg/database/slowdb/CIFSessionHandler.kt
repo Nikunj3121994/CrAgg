@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.spring.session
+package com.github.decyg.CrAgg.database.slowdb
 
 import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
@@ -7,6 +7,7 @@ import java.io.File
 
 /**
  * Singleton that handles the majority of the in-session data storage and cache handling of CIF files on disk
+ *
  */
 object CIFSessionHandler {
 
