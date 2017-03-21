@@ -19,12 +19,6 @@
     <script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-    <script>
-        $('#submitButton').click(function () {
-            $(this).replaceWith("honk")
-        })
-    </script>
-
 </head>
 
 <body>
@@ -48,7 +42,8 @@
             <div class="card-panel light-blue lighten-1">
                     <span class="white-text">
                         This is the detailed graphing query system. This allows you to make huge queries on various graph
-                        types to the Crystallographic Open Database.
+                        types to the Crystallographic Open Database. Please be patient as a query may take a while due to
+                        the vast amount of entries being queried.
                     </span>
             </div>
         </div>
@@ -92,11 +87,24 @@
 
                 <div class="row">
                     <div id="submitButton" class="input-field col s12 right-align">
-                        <button id="submitButtonActual" class="btn waves-effect waves-light" type="submit" name="action" form="graphInput">Submit
+                        <button id="submitButtonActual" class="btn waves-effect waves-light" type="submit" name="action">Submit
                             <i class="material-icons right">send</i>
                         </button>
                     </div>
+
+                    <div id="submitLoader" class="progress col s12 center-align">
+                        <div class="indeterminate"></div>
+                    </div>
                 </div>
+
+                <script>
+                    $('#submitLoader').hide();
+                    $('#submitButton').click(function () {
+                        $(this).hide();
+                        $('#submitLoader').show();
+                        $('#graphInput').submit();
+                    });
+                </script>
 
             </div>
         </div>
