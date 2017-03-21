@@ -2,10 +2,10 @@ package com.github.decyg.CrAgg.database.slowdb.implementation
 
 import com.github.andrewoma.kwery.core.DefaultSession
 import com.github.andrewoma.kwery.core.dialect.MysqlDialect
-import com.github.decyg.CrAgg.cif.CIFBriefResult
-import com.github.decyg.CrAgg.cif.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.parser.CIFBriefResult
+import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.cif.CIF_ID
+import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.indexer.MongoSingleton
 import com.github.decyg.CrAgg.database.query.*
 import com.github.decyg.CrAgg.database.query.enums.AllowableQueryType

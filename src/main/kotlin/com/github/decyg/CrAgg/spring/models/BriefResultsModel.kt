@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.spring.models
 
-import com.github.decyg.CrAgg.cif.CIFBriefResult
+import com.github.decyg.CrAgg.cif.parser.CIFBriefResult
 import com.github.decyg.CrAgg.utils.GeneralConstants
 import org.springframework.cache.annotation.Cacheable
 

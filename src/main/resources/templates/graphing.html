@@ -19,7 +19,11 @@
     <script src="../static/js/init.js" th:src="@{/js/init.js}"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-
+    <script>
+        $('#submitButton').click(function () {
+            $(this).replaceWith("honk")
+        })
+    </script>
 
 </head>
 
@@ -55,34 +59,45 @@
                 <h5>Select a graph type</h5>
                 <select onchange="location = this.value">
                     <option value="" disabled selected>Choose a graph to search on</option>
-                    <option th:each="graph, it : ${graphOptions.graphOptions}" th:text="${graph.name()}"
+                    <option th:each="graph, it : ${graphOptions.graphOptions}" th:text="${graph.prettyName}"
                             th:selected="${graph.name() == curGraph.name()}"
                             th:value="'/graphing/' + ${graph.name()}"></option>
                 </select>
                 <label>Element Selector</label>
+                <div class="card-panel grey lighten-1">
+                    <span  th:text="${curGraph.prettyDescription}"></span>
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <div class="section col s12 grey lighten-5">
+
+            <div class="container section col s12 grey lighten-5">
+
                 <h5>Input your query options:</h5>
 
-                <form id="graphInput" action="#" th:action="'/graphing/' + ${curGraph.name()}" th:object="${graphResultList}" method="post">
-                    <div class="input-field col s3" th:each="termInput, it : ${curGraph.getTermList()}">
-                        <input th:field="*{resultMap[__${it.index}__]}" placeholder="Placeholder"
-                               id="placeholder_id" th:id="${it.index}" type="text"
-                               class="validate" th:placeholder="'e.g. ' + ${termInput.exampleText}">
-                        <label for="placeholder_id" th:for="${it.index}"
-                               th:text="${termInput.prettyName}">Placeholder Entry</label>
-                    </div>
-                </form>
-            </div>
-            <div class="row">
-                <div id="submitButton" class="input-field col s12 right-align">
-                    <button class="btn waves-effect waves-light" type="submit" name="action" form="graphInput">Submit
-                        <i class="material-icons right">send</i>
-                    </button>
+                <br>
+
+                <div class="row">
+                    <form id="graphInput" action="#" th:action="'/graphing/' + ${curGraph.name()}" th:object="${graphResultList}" method="post">
+                        <div class="input-field col s2" th:each="termInput, it : ${curGraph.getTermList()}">
+                            <input th:field="*{resultMap[__${it.index}__]}" placeholder="Placeholder"
+                                   id="placeholder_id" th:id="${it.index}" type="text"
+                                   class="validate" th:placeholder="'e.g. ' + ${termInput.exampleText}">
+                            <label for="placeholder_id" th:for="${it.index}"
+                                   th:text="${termInput.prettyName}">Placeholder Entry</label>
+                        </div>
+                    </form>
                 </div>
+
+                <div class="row">
+                    <div id="submitButton" class="input-field col s12 right-align">
+                        <button id="submitButtonActual" class="btn waves-effect waves-light" type="submit" name="action" form="graphInput">Submit
+                            <i class="material-icons right">send</i>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -90,21 +105,29 @@
 
         <div class="row">
             <div th:if="${graphData != null}" class="section col s12 grey lighten-5">
-                <div id="graphOutput" style="width:1000px;height:500px;"></div>
+                <h5 th:text="${curGraph.prettyName} + ' graph'" th:if="${graphData != ''}">Graph Title</h5>
 
-                <script th:inline="javascript">
+                <div th:if="${graphData == ''}">
+                    <h5>No results found</h5>
+                </div>
 
-                    /*<![CDATA[*/
+                <div th:if="${graphData != ''}">
+                    <div id="graphOutput" style="width:1000px;height:500px;"></div>
 
-                    var data = /*[[${graphData}]]*/ '';
-                    var formatting = /*[[${graphFormat}]]*/ '';
+                    <script th:inline="javascript">
 
-                    var plotEl = $("#graphOutput")[0];
+                        /*<![CDATA[*/
 
-                    Plotly.plot(plotEl, JSON.parse(data), JSON.parse(formatting));
+                        var data = /*[[${graphData}]]*/ '';
+                        var formatting = /*[[${graphFormat}]]*/ '';
 
-                    /*]]>*/
-                </script>
+                        var plotEl = $("#graphOutput")[0];
+
+                        Plotly.plot(plotEl, JSON.parse(data), JSON.parse(formatting));
+
+                        /*]]>*/
+                    </script>
+                </div>
             </div>
         </div>
 

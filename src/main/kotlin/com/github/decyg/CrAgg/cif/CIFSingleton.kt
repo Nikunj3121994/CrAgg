@@ -1,5 +1,6 @@
 package com.github.decyg.CrAgg.cif
 
+import com.github.decyg.CrAgg.cif.parser.*
 import org.parboiled.Parboiled
 import org.parboiled.errors.ErrorUtils
 import org.parboiled.parserunners.ReportingParseRunner

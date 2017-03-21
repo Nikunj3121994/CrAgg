@@ -2,9 +2,9 @@ package com.github.decyg.CrAgg.database.indexer
 
 import com.fasterxml.jackson.databind.DeserializationConfig
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.github.decyg.CrAgg.cif.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
 import com.github.decyg.CrAgg.cif.CIFSingleton
-import com.github.decyg.CrAgg.cif.CIF_ID
+import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.utils.GeneralConstants
 import com.mongodb.MongoClient

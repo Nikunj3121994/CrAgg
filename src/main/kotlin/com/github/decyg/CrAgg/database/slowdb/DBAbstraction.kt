@@ -1,8 +1,8 @@
 package com.github.decyg.CrAgg.database.slowdb
 
-import com.github.decyg.CrAgg.cif.CIFBriefResult
-import com.github.decyg.CrAgg.cif.CIFDetailedResult
-import com.github.decyg.CrAgg.cif.CIF_ID
+import com.github.decyg.CrAgg.cif.parser.CIFBriefResult
+import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.query.QueryExpression
 import com.github.decyg.CrAgg.database.query.enums.CommonQueryTerm
 import java.io.File

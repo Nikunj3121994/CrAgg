@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.cif
+package com.github.decyg.CrAgg.cif.parser
 
 import org.parboiled.BaseParser
 import org.parboiled.Rule

@@ -1,4 +1,4 @@
-package com.github.decyg.CrAgg.cif
+package com.github.decyg.CrAgg.cif.parser
 
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.database.DBSource

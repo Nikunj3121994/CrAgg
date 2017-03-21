@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.database.graphing.enums
 
-import com.github.decyg.CrAgg.cif.CIFDetailedResult
+import com.github.decyg.CrAgg.cif.parser.CIFDetailedResult
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJsonArray
@@ -13,12 +13,16 @@ import com.mongodb.client.FindIterable
  * what terms to be used as input fields. Depending on how detailed these graphs get it may need to be pulled out to its own file
  */
 enum class ChemGraphs(
+        val prettyName : String,
+        val prettyDescription : String,
         val termList : List<ChemField>,
         val projectionKeys : List<String>,
         val documentToJson : (List<Pair<ChemField, String>>, FindIterable<CIFDetailedResult>) -> Pair<String, String>
 ) {
 
     BASIC_RATIO(
+            "Atom Ratio",
+            "Plots the ratio of the selected elements to the total number of atoms in the structural formula.",
             listOf(
                     ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT,
                     ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT,
@@ -30,10 +34,13 @@ enum class ChemGraphs(
                     "cifResult.dataBlocks.dataItems.chemical_formula_sum",
                     "cifResult.dataBlocks.dataItems.symmetry_space_group_name_H-M"
             ),
-            { res, doc ->
+            graphProc@{ res, doc ->
 
                 // need a map of string (space group) to coordinates(x, y, id)
                 // each space group is a different trace
+
+                if(res.size < 2 || doc.count() == 0)
+                    return@graphProc Pair("", "")
 
                 val traceMap : MutableMap<String, Triple<MutableList<String>, MutableList<String>, MutableList<String>>> = mutableMapOf()
                 val xElement = res[0].second
@@ -84,7 +91,6 @@ enum class ChemGraphs(
                 }
 
                 val layout : JsonObject = jsonObject(
-                        "title" to "Results of ${res.toString().replace("), (", "<br>")}",
                         "xaxis" to jsonObject(
                                 "title" to "Ratio of $xElement atoms to total number of atoms"
                         ),

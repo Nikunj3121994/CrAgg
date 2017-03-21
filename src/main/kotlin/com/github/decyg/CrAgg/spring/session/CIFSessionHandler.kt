@@ -1,6 +1,6 @@
 package com.github.decyg.CrAgg.spring.session
 
-import com.github.decyg.CrAgg.cif.CIF_ID
+import com.github.decyg.CrAgg.cif.parser.CIF_ID
 import com.github.decyg.CrAgg.database.DBSingleton
 import com.github.decyg.CrAgg.utils.GeneralConstants
 import java.io.File
