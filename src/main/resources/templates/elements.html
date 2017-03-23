@@ -11,9 +11,15 @@
 
 <div th:fragment="topbar">
     <nav class="light-blue lighten-1" role="navigation">
-        <div class="nav-wrapper container"><a id="logo-container" href="/" th:href="@{/}" class="brand-logo left">Crystal
-            Aggregator</a>
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="/" th:href="@{/}" class="brand-logo">Crystal Aggregator</a>
+            <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
+                <li><a href="#" th:href="@{/graphing}"><i class="material-icons left">insert_chart</i>Graphing</a></li>
+                <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a>
+                </li>
+            </ul>
+            <ul class="side-nav" id="mobile">
                 <li><a href="#" th:href="@{/graphing}"><i class="material-icons left">insert_chart</i>Graphing</a></li>
                 <li><a href="#" th:href="@{/starred}"><i class="material-icons left">star</i>Manage Starred Files</a>
                 </li>
