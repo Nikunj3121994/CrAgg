@@ -22,7 +22,8 @@ enum class ChemGraphs(
 
     BASIC_RATIO(
             "Atom Ratio",
-            "Plots the ratio of the selected elements to the total number of atoms in the structural formula.",
+            "Plots the ratio of the selected elements to the total number of atoms in the structural formula." +
+                    " Note that at least two chemical formula sum has element fields must be populated for use as axis.",
             listOf(
                     ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT,
                     ChemField.CHEMICAL_FORMULA_SUM_HAS_ELEMENT,

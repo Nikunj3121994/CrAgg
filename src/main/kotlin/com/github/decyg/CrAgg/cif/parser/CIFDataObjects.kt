@@ -41,6 +41,15 @@ data class CIFBriefResult(
      */
     fun cellAsString() : String {
 
+        if(     !resultMap.containsKey(CommonQueryTerm.A_LENGTH) ||
+                !resultMap.containsKey(CommonQueryTerm.B_LENGTH) ||
+                !resultMap.containsKey(CommonQueryTerm.C_LENGTH) ||
+                !resultMap.containsKey(CommonQueryTerm.ALPHA_LENGTH) ||
+                !resultMap.containsKey(CommonQueryTerm.BETA_LENGTH) ||
+                !resultMap.containsKey(CommonQueryTerm.GAMMA_LENGTH)
+                )
+            return "N/A"
+
         return  "a: ${resultMap[CommonQueryTerm.A_LENGTH]} Å " +
                 "b: ${resultMap[CommonQueryTerm.B_LENGTH]} Å " +
                 "c: ${resultMap[CommonQueryTerm.C_LENGTH]} Å " +

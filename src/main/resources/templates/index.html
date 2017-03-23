@@ -42,9 +42,9 @@
             <div class="row">
                 <div class="input-field col s12">
                     <select multiple required th:field="*{dbList}">
-                        <option value="" disabled selected>Choose one or more database(s) to search on</option>
+                        <option value="" disabled>Choose one or more database(s) to search on</option>
                         <option th:each="db, it : ${searchmodel.dbOptions}" th:value="${db.getSimpleName()}"
-                                th:text="${db.getSimpleName()}"></option>
+                                th:text="${db.getSimpleName()}" selected></option>
                     </select>
                     <label>Database Selector</label>
                 </div>
