@@ -17,6 +17,8 @@ import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.configuration.CodecRegistry
 import java.io.File
 import java.util.concurrent.Executors
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * This is a singleton to manage interfacing with the MongoDB API for CIF specific things
@@ -74,17 +76,15 @@ object MongoSingleton {
             try {
                 if(fileText != "") {
 
-                    if(cifFile != null)
-
+                    if(cifFile != null) {
                         mongoCol.insertOne(CIFSingleton.getPopulatedCIF(id, CIFSingleton.parseCIF(fileText)))
-
-                        println("success $cifFile")
+                        Logger.getAnonymousLogger().log(Level.ALL, "Success $cifFile")
+                    }
 
                 }
 
             } catch (ex : CIFSingleton.ParseException){
-                // Need to log failed parses
-                //println(ex)
+                // At some point need to log failed parses
             }
         }
 

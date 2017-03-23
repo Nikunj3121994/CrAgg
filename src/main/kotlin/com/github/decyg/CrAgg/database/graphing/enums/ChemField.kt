@@ -4,7 +4,8 @@ import com.mongodb.client.model.Filters.regex
 import org.bson.conversions.Bson
 
 /**
- * Created by declan on 19/03/2017.
+ * This is an enum designed to create an extensible map of fields that the user can search on for the graphing
+ * analysis section. It's designed to be completely modular and extensible.
  */
 enum class ChemField(
         val prettyName : String,
