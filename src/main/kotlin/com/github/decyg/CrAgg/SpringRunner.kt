@@ -19,8 +19,12 @@ fun main(args: Array<String>) {
 
     // On first run update the local cache for all implementations
 
-    DBSingleton.datasetMap.forEach {
-        it.value.updateLocalCIFStorage()
+    if(args.size == 1 && args[0] == "updateCache"){
+
+        DBSingleton.datasetMap.forEach {
+            it.value.updateLocalCIFStorage()
+        }
+
     }
 
 }
