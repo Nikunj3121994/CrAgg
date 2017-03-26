@@ -13,7 +13,7 @@ import org.jetbrains.spek.api.dsl.on
 
 
 /**
- * Created by declan on 21/03/2017.
+ * Test case for the functionality of the cif parser
  */
 class CIFParserSpek : Spek({
     describe("CIF Parser") {

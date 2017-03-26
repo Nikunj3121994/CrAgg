@@ -13,7 +13,7 @@ import org.jetbrains.spek.api.dsl.on
 
 
 /**
- * Created by declan on 21/03/2017.
+ * Test cases for the graphing
  */
 class GraphingSpek : Spek({
     describe("Graphing") {

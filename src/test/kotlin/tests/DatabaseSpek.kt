@@ -14,7 +14,7 @@ import java.io.File
 
 
 /**
- * Created by declan on 21/03/2017.
+ * Test case for the functionality of the database parts
  */
 class DatabaseSpek : Spek({
     describe("Database utilities") {
