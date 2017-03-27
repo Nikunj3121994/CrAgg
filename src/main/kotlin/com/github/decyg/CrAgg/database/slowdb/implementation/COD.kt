@@ -20,7 +20,7 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.sql.DriverManager
 import java.util.*
-
+import kotlin.concurrent.thread
 
 
 /**
@@ -53,21 +53,25 @@ class COD(
 
         val reader = BufferedReader(InputStreamReader(pb.inputStream))
 
-        while(true){
-            val line : String? = reader.readLine()
-            if(line != null){
-                val idFound = "([0-9]+)\\.cif".toRegex().toPattern()
+        thread {
+            while(true){
+                val line : String? = reader.readLine()
+                if(line != null){
+                    val idFound = "([0-9]+)\\.cif".toRegex().toPattern()
 
-                val matcher = idFound.matcher(line)
+                    val matcher = idFound.matcher(line)
 
-                if(matcher.find()){
-                    MongoSingleton.updateIndexForFile(CIF_ID(this::class.simpleName!!, matcher.group(1)), line.replace('/', '\\'))
+                    if(matcher.find()){
+                        MongoSingleton.updateIndexForFile(CIF_ID(this::class.simpleName!!, matcher.group(1)), line.replace('/', '\\'))
+                    }
+
+                } else {
+                    break
                 }
-
-            } else {
-                break
             }
         }
+
+        pb.waitFor()
 
         reader.close()
 

@@ -24,7 +24,7 @@ import java.util.concurrent.Executors
 object MongoSingleton {
 
 
-    val tPool = Executors.newCachedThreadPool()!!
+    val tPool = Executors.newFixedThreadPool(100)!!
 
     val jacksonObjMapper = ObjectMapperFactory.createObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
